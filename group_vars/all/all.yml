@@ -1,0 +1,25 @@
+---
+credentials:
+  host: "{{ ansible_host | default(inventory_hostname) }}"
+  user: admin
+  passwd: "{{ vault_rootpasswd }}"
+  timeout: 300
+  mode: telnet
+
+credentials_prep:
+  host: "{{ ansible_host | default(inventory_hostname) }}"
+  user: root
+  passwd:
+  timeout: 300
+  mode: telnet
+
+build_directory: /{{ playbook_dir }}/build/{{ inventory_hostname }}/tmp
+junos_conf: /var/www/html/configs/{{ site_name }}/{{ inventory_hostname }}.conf
+
+global_system:
+  root_encrypted_password: XXXXXXXXXXXXXXX
+  login_message: \nUNAUTHORIZED ACCESS TO THIS DEVICE IS PROHIBITED.\n\nYou must have explicit, authorized permission to access or configure this device.\nUnauthorized attempts and actions to access or use this system may result in civil\nand/or criminal penalties.\n\nAll activities performed on this device are logged and monitored.\n\n
+
+global_snmp:
+  clients:
+    - ip: 1.2.3.0/24

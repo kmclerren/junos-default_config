@@ -1,0 +1,20 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split(".") %}
+{% set v6_prefix = site_ipv6_prefix.split(":") %}
+{% set v4_pub_prefix = site_ipv4_public_prefix.split(".") %}
+routing-options {
+    graceful-restart;
+    rib inet6.0 {
+        static {
+            route ::0/0 next-hop {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2253::1;
+        }
+    }
+    static {
+        route 0.0.0.0/0 next-hop {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.1;
+    }
+    router-id {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.1;
+    autonomous-system {{ site_private_as }};
+    forwarding-table {
+        export multipath-lb;
+    }
+}

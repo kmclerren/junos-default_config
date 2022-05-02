@@ -1,0 +1,5 @@
+---
+- name: building chassis configuration
+  template: >
+    src={{ chassis_template }}
+    dest={{ build_directory }}/01chassis.conf.part

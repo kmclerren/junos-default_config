@@ -1,0 +1,5 @@
+---
+- name: building interfaces configuration
+  template: >
+    src={{ interfaces_template }}
+    dest={{ build_directory }}/01interfaces.conf.part

@@ -1,0 +1,5 @@
+---
+- name: building common configuration
+  template: >
+    src={{ common_template }}
+    dest={{ build_directory }}/01system.conf.part

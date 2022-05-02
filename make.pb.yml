@@ -1,0 +1,8 @@
+---
+# This playbook will generate and apply configuration to all of the devices
+# The name of the playbooks are based on the role names used in the
+# hosts file, but that is not manditory.
+#
+- import_playbook: make_clean.pb.yml
+- import_playbook: make_roles.pb.yml
+- import_playbook: assemble.pb.yml

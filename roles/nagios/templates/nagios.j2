@@ -1,0 +1,7 @@
+define host {
+    use                     generic-switch
+    host_name               {{ inventory_hostname }}
+    address                 {{ primary_ip4 }}
+    hostgroups              {{ site_name }}
+    parents                 {{ site_name }}-net-icr-001
+}

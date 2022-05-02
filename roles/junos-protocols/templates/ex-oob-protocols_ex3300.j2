@@ -1,0 +1,14 @@
+#jinja2: lstrip_blocks: True
+protocols {
+    lldp {
+        port-id-subtype interface-name;
+        port-description-type interface-alias;
+        interface all;
+    }
+    igmp-snooping {
+        vlan all;
+    }
+    vstp {
+        vlan all;
+    }
+}

@@ -1,0 +1,63 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split(".") %}
+{% set v6_prefix = site_ipv6_prefix.split(":") %}
+{% set v4_pub_prefix = site_ipv4_public_prefix.split(".") %}
+forwarding-options {
+    sampling {
+        input {
+            rate 100;
+            max-packets-per-second 65535;
+        }
+        instance {
+            sample-instance01 {
+                input {
+                    rate 100;
+                    run-length 20;
+                    max-packets-per-second 65535;
+                }
+                family inet {
+                    output {
+                        flow-server 172.22.253.73 {
+                            port 2055;
+                            autonomous-system-type origin;
+                            no-local-dump;
+                            source-address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.0.1;
+                            version9 {
+                                template {
+                                    v4;
+                                }
+                            }
+                        }
+                        inline-jflow {
+                            source-address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.0.1;
+                        }
+                    }
+                }
+                family inet6 {
+                    output {
+                        flow-server 172.22.253.73 {
+                            port 2055;
+                            autonomous-system-type origin;
+                            no-local-dump;
+                            source-address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.0.1;
+                            version9 {
+                                template {
+                                    v6;
+                                }
+                            }
+                        }
+                        inline-jflow {
+                            source-address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.0.1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    hash-key {
+        family inet {
+            layer-3;
+            layer-4;
+        }
+    }
+}

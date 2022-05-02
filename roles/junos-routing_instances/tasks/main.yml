@@ -1,0 +1,5 @@
+---
+- name: building routing-instances configuration
+  template: >
+    src={{ routing_instances_template }}
+    dest={{ build_directory }}/01routing-instances.conf.part

@@ -1,0 +1,100 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split('.') %}
+{% set v6_prefix = site_ipv6_prefix.split(':') %}
+{% set transit_octet = primary_ip4.split('.') %}
+routing-instances {
+    {{ site_name }}-default {
+        instance-type virtual-router;
+        interface irb.200;
+        interface irb.2248;
+        interface irb.2252;
+        interface irb.2253;
+        interface lo0.0;
+        routing-options {
+            rib {{ site_name }}-default.inet6.0 {
+                static {
+                    route ::0/0 {
+                        next-hop {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:200::1;
+                        preference 160;
+                    }
+                }
+            }
+            static {
+                route 0.0.0.0/0 {
+                    next-hop {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.0.1;
+                    preference 160;
+                }
+            }
+            router-id {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.2;
+            autonomous-system {{ site_private_as }};
+        }
+        forwarding-options {
+            dhcp-relay {
+                server-group {
+                    zwin-dhcp-servers {
+{% for item in site_system.dhcp_server %}
+                        {{ item.ip }};
+{% endfor %}
+                    }
+                }
+                group dhcp-relay-group {
+                    active-server-group zwin-dhcp-servers;
+                    interface irb.2248;
+                    interface irb.2252;
+                }
+            }
+        }
+        protocols {
+            ospf {
+                reference-bandwidth 1g;
+                area 0.0.0.0 {
+                    interface lo0.0 {
+                        passive;
+                    }
+                    interface irb.200;
+                }
+                area {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.0.0 {
+                    interface irb.2253 {
+                        passive;
+                    }
+                    interface irb.2248 {
+                        passive;
+                    }
+                    interface irb.2252 {
+                        passive;
+                    }
+                }
+            }
+            ospf3 {
+                reference-bandwidth 1g;
+                area 0.0.0.0 {
+                    interface lo0.0 {
+                        passive;
+                    }
+                    interface irb.200;
+                }
+                area {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.0.0 {
+                    interface irb.2253 {
+                        passive;
+                    }
+                    interface irb.2248 {
+                        passive;
+                    }
+                    interface irb.2252 {
+                        passive;
+                    }
+                }
+            }
+            pim {
+                rp {
+                    local {
+                        address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.2;
+                    }
+                }
+                interface irb.2253;
+                interface irb.2248;
+                interface irb.2252;
+            }
+        }
+    }
+}

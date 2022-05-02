@@ -1,0 +1,23 @@
+---
+# This task merges all the configuration fragments into one file
+# In this example it merges the common.conf.part and main.conf.part
+# into the junos.conf file.
+
+- name: Assemble configuration
+  hosts: all
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Assembling configfurations
+      assemble: src="/{{ playbook_dir }}/build/{{ inventory_hostname }}/tmp" dest="/var/www/html/configs/{{ inventory_hostname }}.txt"
+#    - name: Assembling hosts file
+#      assemble: src="/{{ playbook_dir }}/build/hosts" dest="/var/www/html/configs/{{ site_name }}/hosts.txt"
+#    - name: Assembling bind file
+#      assemble: src="/{{ playbook_dir }}/build/bind" dest="/var/www/html/configs/{{ site_name }}/bind.txt"
+#    - name: Assembling nagios config file
+#      assemble: src="/{{ playbook_dir }}/build/nagios" dest="/var/www/html/configs/{{ site_name }}/{{ site_name }}-nagios.txt"
+
+  tags:
+    - clean
+
+

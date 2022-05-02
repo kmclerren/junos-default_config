@@ -1,0 +1,166 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split(".") %}
+{% set v6_prefix = site_ipv6_prefix.split(":") %}
+replace:
+firewall {
+    family inet {
+        filter z-wireless-in {
+            term icmp_echo_request {
+                from {
+                    source-address {
+                        0.0.0.0/0;
+                    }
+                    icmp-type echo-request;
+                }
+                then accept;
+            }
+            term icmp_echo_reply {
+                from {
+                    icmp-type echo-reply;
+                }
+                then accept;
+            }
+            term dhcp-permit {
+                from {
+                    source-address {
+                        0.0.0.0/0;
+                    }
+                    destination-address {
+{% for item in site_system.dhcp_server %}
+                        {{ item.ip }}/32;
+{% endfor %}
+                        {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.14.11/32;
+                        {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.14.12/32;
+                    }
+                    protocol udp;
+                    destination-port 67;
+                }
+                then accept;
+            }
+            term open-dns-forwarder {
+                from {
+                    source-address {
+                        0.0.0.0/0;
+                    }
+                    destination-address {
+{% for item in site_system.dns_server %}
+                        {{ item.ip }}/32;
+{% endfor %}
+                        {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.14.210/32;
+                        {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.14.211/32;
+                    }
+                    protocol [ udp tcp ];
+                    destination-port 53;
+                }
+                then accept;
+            }
+            term dns-permit {
+                from {
+                    source-address {
+                        0.0.0.0/0;
+                    }
+                    destination-address {
+{% for item in site_system.dns_server %}
+                        {{ item.ip }}/32;
+{% endfor %}
+                        {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.14.11/32;
+                        {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.14.12/32;
+                    }
+                    protocol [ udp tcp ];
+                    destination-port 53;
+                }
+                then accept;
+            }
+            term ipad-provision {
+                from {
+                    source-address {
+                        0.0.0.0/0;
+                    }
+                    destination-address {
+                        172.22.14.100/32;
+                    }
+                    protocol tcp;
+                    destination-port [ 8443 22 443 ];
+                }
+                then accept;
+            }
+            term tcp_established {
+                from {
+                    source-address {
+                        0.0.0.0/0;
+                    }
+                    tcp-established;
+                }
+                then accept;
+            }
+            term rfc1918_deny {
+                from {
+                    source-address {
+                        0.0.0.0/0;
+                    }
+                    destination-address {
+                        172.16.0.0/12;
+                        169.254.0.0/16;
+                        192.168.0.0/16;
+                        10.0.0.0/8;
+                    }
+                }
+                then {
+                    reject administratively-prohibited;
+                }
+            }
+            term default_permit {
+                then accept;
+            }
+        }
+    }
+    family inet6 {
+        filter z-wireless-in-v6 {
+            term icmp_echo_request {
+                from {
+                    source-address {
+                        ::0/0;
+                    }
+                    icmp-type echo-request;
+                }
+                then accept;
+            }
+            term ipv6_discovery {
+                from {
+                    source-address {
+                        ::0/0;
+                    }
+                    destination-address {
+                        {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2008::1/128;
+                        {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2100::1/128;
+                    }
+                }
+                then accept;
+            }
+            term zillow_space {
+                from {
+                    source-address {
+                        ::0/0;
+                    }
+                    destination-address {
+                        2620:115::/44;
+                    }
+                }
+                then {
+                    reject administratively-prohibited;
+                }
+            }
+            term default_permit {
+                from {
+                    source-address {
+                        ::0/0;
+                    }
+                    destination-address {
+                        ::0/0;
+                    }
+                }
+                then accept;
+            }
+        }
+    }
+}

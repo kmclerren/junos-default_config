@@ -1,0 +1,36 @@
+#jinja2: lstrip_blocks: True
+groups {
+  user_data {
+      interfaces {
+{% for item in vlan.config %}
+{% if loop.index == 1 %}
+          "<ge-[0,1,3,5,7,9]/0/*>" {
+              description "v{{ item.id }} - {{ item.description }}";
+              unit 0 {
+                  family ethernet-switching {
+                      interface-mode access;
+                      vlan {
+                          members v{{ item.id }};
+                      }
+                      recovery-timeout 1800;
+                  }
+              }
+          }
+{% elif loop.index == 2 %}
+          "<ge-[2,4,6,8]/0/*>" {
+              description "v{{ item.id }} - {{ item.description }}";
+              unit 0 {
+                  family ethernet-switching {
+                      interface-mode access;
+                      vlan {
+                          members v{{ item.id }};
+                      }
+                      recovery-timeout 1800;
+                  }
+              }
+          }
+      }
+   }
+}
+{% endif %}
+{% endfor %}

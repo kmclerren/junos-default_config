@@ -1,0 +1,5 @@
+---
+- name: building nagios config file
+  template: >
+    src=nagios.j2
+    dest=./build/nagios/nagios-{{ inventory_hostname }}.conf.part

@@ -1,0 +1,48 @@
+#jinja2: lstrip_blocks: True
+groups {
+    ilo_mgmt {
+        interfaces {
+            <ge-*> {
+                description "v2248 - iLO management";
+                unit 0 {
+                    family ethernet-switching {
+                        port-mode access;
+                        vlan {
+                            members v2248;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    network_mgmt {
+        interfaces {
+            <ge-*> {
+                description "v2253 - Network management";
+                unit 0 {
+                    family ethernet-switching {
+                        port-mode access;
+                        vlan {
+                            members v2253;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    inf_mgmt {
+        interfaces {
+            <ge-*> {
+                description "v2252 - Infrastructure management";
+                unit 0 {
+                    family ethernet-switching {
+                        port-mode access;
+                        vlan {
+                            members v2252;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

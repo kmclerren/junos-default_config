@@ -1,0 +1,43 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split('.') %}
+{% set v6_prefix = site_ipv6_prefix.split(':') %}
+protocols {
+    lldp {
+        port-id-subtype interface-name;
+        port-description-type interface-alias;
+        neighbour-port-info-display port-id;
+        interface all;
+    }
+    igmp-snooping {
+        vlan all;
+    }
+    layer2-control {
+        nonstop-bridging;
+        bpdu-block {
+            disable-timeout 1800;
+        }
+    }
+    vstp {
+        bpdu-block-on-edge;
+        interface all;
+        interface ae10 {
+             edge;
+         }
+        interface ae11 {
+             edge;
+        }
+        interface ae12 {
+             edge;
+         }
+        interface ae13 {
+             edge;
+        }
+        interface ae14 {
+             edge;
+         }
+        interface ae15 {
+             edge;
+        }
+        vlan all;
+    }
+}

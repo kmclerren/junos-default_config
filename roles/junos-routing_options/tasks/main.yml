@@ -1,0 +1,5 @@
+---
+- name: building routing-options configuration
+  template: >
+    src={{ routing_options_template }}
+    dest={{ build_directory }}/01routing-options.conf.part

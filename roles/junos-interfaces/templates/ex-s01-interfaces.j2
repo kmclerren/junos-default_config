@@ -1,0 +1,164 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split('.') %}
+{% set v6_prefix = site_ipv6_prefix.split(':') %}
+{% set transit_octet = primary_ip4.split('.') %}
+interfaces {
+    xe-0/0/0 {
+        description "CORE: {{ site_name }}-net-icr-001";
+        ether-options {
+            802.3ad ae0;
+        }
+    }
+    xe-1/0/0 {
+        description "CORE: {{ site_name }}-net-icr-001";
+        ether-options {
+            802.3ad ae0;
+        }
+    }
+    ae0 {
+        description {{ site_name }}-net-icr-001;
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v2015 v2014 v2114 ];
+                }
+            }
+        }
+    }
+    ae10 {
+        description "RESERVED: Server LAG";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                recovery-timeout 1800;
+                interface-mode trunk;
+                vlan {
+                    members [ v2015 v2014 v2114 ];
+                }
+            }
+        }
+    }
+    ae11 {
+        description "RESERVED: Server LAG";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                recovery-timeout 1800;
+                interface-mode trunk;
+                vlan {
+                    members [ v2015 v2014 v2114 ];
+                }
+            }
+        }
+    }
+    ae12 {
+        description "RESERVED: Server LAG";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                recovery-timeout 1800;
+                interface-mode trunk;
+                vlan {
+                    members [ v2015 v2014 v2114 ];
+                }
+            }
+        }
+    }
+    ae13 {
+        description "RESERVED: Server LAG";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                recovery-timeout 1800;
+                interface-mode trunk;
+                vlan {
+                    members [ v2015 v2014 v2114 ];
+                }
+            }
+        }
+    }
+    ae14 {
+        description "RESERVED: Server LAG";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                recovery-timeout 1800;
+                interface-mode trunk;
+                vlan {
+                    members [ v2015 v2014 v2114 ];
+                }
+            }
+        }
+    }
+    ae15 {
+        description "RESERVED: Server LAG";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                recovery-timeout 1800;
+                interface-mode trunk;
+                vlan {
+                    members [ v2015 v2014 v2114 ];
+                }
+            }
+        }
+    }
+    vme {
+        unit 0 {
+            description "Vlan 2253 - Network Management";
+            family inet {
+                address {{ primary_ip4 }}/24;
+            }
+            family inet6 {
+                address {{ primary_ip6 }}/64 {
+                    preferred;
+                }
+                address fe80:2253::{{ transit_octet[3] }}/64;
+            }
+        }
+    }
+}

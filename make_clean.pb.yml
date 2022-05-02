@@ -1,0 +1,31 @@
+---
+- name: Creating build directories for each host
+  hosts: all
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: remove host build temp directory
+      file: path={{ build_directory }} state=absent
+#    - name: remove host file directory
+#      file: path=./build/hosts state=absent
+#    - name: remove bind file directory
+#      file: path=./build/bind state=absent
+#    - name: remove nagios directory
+#      file: path=./build/nagios state=absent
+#    - name: remove config directory
+#      file: path=/var/www/html/configs/{{ site_name }} state=absent
+    - name: remove junos.conf file
+      file: path={{ junos_conf }} state=absent
+    - name: create host build temp directory
+      file: path={{ build_directory }} state=directory
+#    - name: create host build config directory
+#      file: path=/var/www/html/configs/{{ site_name }} state=directory
+#    - name: create host build temp directory
+#      file: path=./build/hosts state=directory
+#    - name: create host bind temp directory
+#      file: path=./build/bind state=directory
+#    - name: create nagios directory
+#      file: path=./build/nagios state=directory
+
+  tags:
+     - clean

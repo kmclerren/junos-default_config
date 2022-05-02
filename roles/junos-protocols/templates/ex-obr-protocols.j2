@@ -1,0 +1,31 @@
+#jinja2: lstrip_blocks: True
+protocols {
+    mld {
+        interface all;
+    }
+    lldp {
+        port-id-subtype interface-name;
+        port-description-type interface-alias;
+        neighbour-port-info-display port-id;
+        interface all;
+    }
+    igmp-snooping {
+        vlan all;
+    }
+    layer2-control {
+        nonstop-bridging;
+    }
+    vstp {
+        interface all;
+        vlan-group {
+            group root {
+                vlan [ 2253 2248 2252 ];
+                bridge-priority 4k;
+            }
+            group non-root {
+                vlan [ 200 2016 ];
+                bridge-priority 60k;
+            }
+        }
+    }
+}

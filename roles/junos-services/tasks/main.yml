@@ -1,0 +1,5 @@
+---
+- name: building services configuration
+  template: >
+    src={{ services_template }}
+    dest={{ build_directory }}/01services.conf.part

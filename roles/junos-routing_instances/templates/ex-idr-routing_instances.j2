@@ -1,0 +1,132 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split('.') %}
+{% set v6_prefix = site_ipv6_prefix.split(':') %}
+{% set transit_octet = primary_ip4.split('.') %}
+routing-instances {
+    {{ site_name }}-default {
+        instance-type virtual-router;
+        system {
+            services {
+                dhcp-local-server {
+                    dhcpv6 {
+                        overrides {
+                            interface-client-limit 100;
+                        }
+                        route-suppression access access-internal;
+                        group dhcpv6_group {
+{% for item in vlan.config %}
+                            interface irb.{{ item.id }};
+{% endfor %}
+                        }
+                    }
+                    overrides {
+                        interface-client-limit 100;
+                    }
+                }
+            }
+        }
+        access {
+            address-assignment {
+{% for item in vlan.config %}
+                pool vlan{{ item.id }}_dhcpv6_pool {
+                    family inet6 {
+                        prefix {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:{{ item.id }}::/64;
+                        range vlan{{ item.id }}_dhcpv6_range {
+                            low {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:{{ item.id }}::10/128;
+                            high {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:{{ item.id }}:ffff:ffff:ffff:fff0/128;
+                        }
+                        dhcp-attributes {
+                            valid-lifetime 28800;
+                            preferred-lifetime 28800;
+                        }
+                    }
+                }
+{% endfor %}
+            }
+        }
+        interface irb.200;
+{% for item in vlan.config %}
+        interface irb.{{ item.id }};
+{% endfor %}
+        interface lo0.0;
+        routing-options {
+            rib {{ site_name }}-default.inet6.0 {
+                static {
+                    route ::0/0 {
+                        next-hop {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:200::1;
+                        preference 160;
+                    }
+                }
+            }
+            static {
+                route 0.0.0.0/0 {
+                    next-hop {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.0.1;
+                    preference 160;
+                }
+            }
+            router-id {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.{{ transit_octet[3] }};
+            autonomous-system 18888;
+        }
+        forwarding-options {
+            dhcp-relay {
+                server-group {
+                    zwin-dhcp-servers {
+{% for item in site_system.dhcp_server %}
+                        {{ item.ip }};
+{% endfor %}
+                    }
+                }
+                group dhcp-relay-group {
+                    active-server-group zwin-dhcp-servers;
+{% for item in vlan.config %}
+                    interface irb.{{ item.id }};
+{% endfor %}
+                }
+            }
+        }
+        protocols {
+            ospf {
+                reference-bandwidth 1g;
+                area 0.0.0.0 {
+                    interface lo0.0 {
+                        passive;
+                    }
+                    interface irb.200;
+                }
+                area {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.0.0 {
+{% for item in vlan.config %}
+                    interface irb.{{ item.id }} {
+                        passive;
+                    }
+{% endfor %}
+                }
+            }
+            ospf3 {
+                reference-bandwidth 1g;
+                area 0.0.0.0 {
+                    interface lo0.0 {
+                        passive;
+                    }
+                    interface irb.200;
+                }
+                area {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.0.0 {
+{% for item in vlan.config %}
+                    interface irb.{{ item.id }} {
+                        passive;
+                    }
+{% endfor %}
+                }
+            }
+            pim {
+                rp {
+                    local {
+                        address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.{{ transit_octet[3] }};
+                    }
+                }
+{% for item in vlan.config %}
+                interface irb.{{ item.id }};
+{% endfor %}
+            }
+        }
+    }
+}

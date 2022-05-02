@@ -1,0 +1,17 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split('.') %}
+{% set v6_prefix = site_ipv6_prefix.split(':') %}
+vlans {
+    /* {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.15.0/24 */
+    v2015 {
+        vlan-id 2015;
+    }
+    /* {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.14.0/22 */
+    v2014 {
+        vlan-id 2014;
+    }
+    /* {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.114.0/24 */
+    v2114 {
+        vlan-id 2114;
+    }
+}

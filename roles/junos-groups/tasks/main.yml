@@ -1,0 +1,5 @@
+---
+- name: building groups configuration
+  template: >
+    src={{ groups_template }}
+    dest={{ build_directory }}/01groups.conf.part

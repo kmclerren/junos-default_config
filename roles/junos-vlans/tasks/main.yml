@@ -1,0 +1,5 @@
+---
+- name: building vlans configuration
+  template: >
+    src={{ vlans_template }}
+    dest={{ build_directory }}/01vlans.conf.part

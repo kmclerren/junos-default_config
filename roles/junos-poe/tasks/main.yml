@@ -1,0 +1,5 @@
+---
+- name: building poe configuration
+  template: >
+    src={{ poe_template }}
+    dest={{ build_directory }}/01poe.conf.part

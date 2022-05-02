@@ -1,0 +1,40 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split('.') %}
+{% set v6_prefix = site_ipv6_prefix.split(':') %}
+---
+{% raw %}
+# interfaces_template default: ex-oob-interfaces.j2 - ex3400/ex4600
+# interfaces_template default: ex-oob-interfaces_ex3300.j2 - ex3300
+interfaces_template: "ex-oob-interfaces.j2"
+
+# interfaces_template default: ex-oob-protocols.j2 - ex3400/ex4600
+# interfaces_template default: ex-oob-protocols_ex3300.j2 - ex3300
+protocols_template: "ex-oob-protocols.j2"
+
+common_template: "common.j2"
+chassis_template: "chassis.j2"
+virtual_chassis_template: "ex-virtual_chassis.j2"
+routing_options_template: "ex-layer2-routing_options.j2"
+poe_template: "poe.j2"
+vlans_template: "ex-oob-vlans.j2"
+
+# interfaces_template default: ex-oob-groups.j2 - ex3400/ex4600
+# interfaces_template default: ex-oob-groups_ex3300.j2 - ex3300
+groups_template: "ex-oob-groups.j2"
+
+{% endraw %}
+
+{% set auto_floor = inventory_hostname.split('-') %}
+floor: {{ auto_floor[1] }}
+
+# primary_ip4/6 - vme management IP
+primary_ip4: {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.{{ last_octet }}
+primary_ip6: {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2253::{{ last_octet }}
+
+# virtual_chassis - virtual chassis config for all members
+virtual_chassis:
+  no_split: true
+  config:
+    - member: 0
+      role: routing-engine
+      sn: REPLACE

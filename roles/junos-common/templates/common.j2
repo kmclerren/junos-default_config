@@ -1,0 +1,198 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split(".") %}
+{% set v6_prefix = site_ipv6_prefix.split(":") %}
+system {
+{% if 'efw' not in inventory_hostname %}
+    host-name {{ inventory_hostname }};
+{% endif %}
+    auto-snapshot;
+    domain-name net.test.net;
+    backup-router {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.1 destination 0.0.0.0/0;
+    inet6-backup-router {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2253::1 destination ::/0;
+    time-zone UTC;
+    authentication-order [ tacplus password ];
+    root-authentication {
+        encrypted-password "{{ global_system.root_encrypted_password }}"; ## SECRET-DATA
+    }
+    name-server {
+        1.1.1.1;
+    }
+    tacplus-server {
+{% for item in site_system.tacacs_server %}
+        {{ item.ip }} {
+            secret "ZZZZZZZZ"; ## SECRET-DATA
+            timeout 1;
+{% if 'obr' in inventory_hostname %}
+            source-address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.2
+{% elif 'efw' not in inventory_hostname %}
+            source-address {{ primary_ip4 }};
+{% endif %}
+        }
+{% endfor %}
+    }
+    accounting {
+        events [ login change-log interactive-commands ];
+        destination {
+            tacplus {
+                server {
+{% for item in site_system.tacacs_server %}
+                    {{ item.ip }} {
+                        secret "ZZZZZZZZZZZZ"; ## SECRET-DATA
+                        timeout 1;
+{% if 'obr' in inventory_hostname %}
+            source-address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.2
+{% elif 'efw' not in inventory_hostname %}
+                        source-address {{ primary_ip4 }};
+{% endif %}
+                    }
+{% endfor %}
+                }
+            }
+        }
+    }
+    login {
+        message "{{ global_system.login_message }}";
+        retry-options {
+            tries-before-disconnect 5;
+            backoff-threshold 3;
+            backoff-factor 10;
+            lockout-period 4;
+        }
+        class RANCID-Class {
+            idle-timeout 15;
+            permissions [ view view-configuration ];
+        }
+        user admin {
+            full-name "Backdoor Admin Account";
+            uid 1000;
+            class super-user;
+            authentication {
+                encrypted-password "{{ global_system.root_encrypted_password }}"; ## SECRET-DATA
+            }
+        }
+        user rancid {
+            full-name "RANCID template for remote access";
+            uid 2001;
+            class RANCID-Class;
+        }
+        user ansible {
+            full-name "Ansible service account";
+            uid 1005;
+            class super-user;
+            authentication {
+                ssh-rsa "ssh-rsa XXXXXX"; ## SECRET-DATA
+           }
+        }
+        user remote {
+            full-name "TACACS+ template for remote access";
+            uid 2000;
+            class super-user;
+        }
+    }
+    services {
+        ssh {
+            root-login deny;
+            protocol-version v2;
+            rate-limit 3;
+        }
+        netconf {
+            ssh;
+            traceoptions {
+                file netconf.log;
+                flag all;
+            }
+        }
+    }
+    syslog {
+        archive size 10m files 10;
+        user * {
+            any emergency;
+        }
+{% for item in site_system.syslog_server %}
+        host {{ item.ip }} {
+            any any;
+        }
+{% endfor %}
+{% if 's01' in inventory_hostname or 'obr' in inventory_hostname or 'dat' in inventory_hostname or 'uts' in inventory_hostname %}
+        file messages {
+            any notice;
+            authorization info;
+            match "!(.*NDI.*|.*SNMP_TRAP_LINK_DOWN.*)";
+        }
+        file updown {
+            any info;
+            match "LINK_DOWN|LINK_UP";
+        }
+        file port-security {
+            any info;
+            match "BPDU|MAC_LIMIT";
+        }
+        file ndi {
+            any info;
+            match "NDI";
+        }
+        file interactive-commands {
+            interactive-commands any;
+        }
+        file kernel {
+            kernel any;
+        }
+        time-format year millisecond;
+{% else %}
+        file messages {
+           any notice;
+           authorization info;
+        }
+        file interactive-commands {
+           interactive-commands any;
+        }
+        file kernel {
+           kernel any;
+        }
+        time-format year millisecond;
+{% endif %}
+    }
+    commit synchronize;
+{% if mac_shift is defined %}
+    packet-forwarding-options {
+        irb-mac-shift;
+    }
+{% endif %}
+    ntp {
+{% for item in site_system.ntp_server %}
+        server {{ item.ip }};
+{% endfor %}
+    }
+}
+snmp {
+    name {{ inventory_hostname }};
+    location {{ site_name }};
+    contact "no@spam.com";
+    filter-duplicates;
+    community xxxxx {
+        authorization read-only;
+        clients {
+            {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.0/24;
+{% for item in global_snmp.clients %}
+            {{ item.ip }};
+{% endfor %}
+        }
+    }
+    trap-group xxxxxxxxxxxx {
+        version v2;
+        categories {
+            authentication;
+            chassis;
+            link;
+            routing;
+            startup;
+            configuration;
+            services;
+        }
+        targets {
+{% for item in site_system.snmp_server %}
+            {{ item.ip }};
+{% endfor %}
+        }
+    }
+}

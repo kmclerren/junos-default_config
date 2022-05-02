@@ -1,0 +1,56 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split('.') %}
+{% set v6_prefix = site_ipv6_prefix.split(':') %}
+vlans {
+    /* {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.0.0/23 */
+    v200 {
+        vlan-id 200;
+        l3-interface irb.200;
+    }
+    /* {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.2.0/24 */
+    v2002 {
+        vlan-id 2002;
+    }
+    /* {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.8.0/22 */
+    v2008 {
+        vlan-id 2008;
+    }
+    /* {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.23.0/24 */
+    v2023 {
+        vlan-id 2023;
+    }
+    /* {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.24.0/24 */
+    v2024 {
+        vlan-id 2024;
+    }
+    /* {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.100.0/22 */
+    v2100 {
+        vlan-id 2100;
+    }
+    /* {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.200.0/24 */
+    v2200 {
+        vlan-id 2200;
+    }
+    /* {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.248.0/24 */
+    v2248 {
+        vlan-id 2248;
+    }
+    /* {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.252.0/24 */
+    v2252 {
+        vlan-id 2252;
+    }
+    /* {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.0/24 */
+    v2253 {
+        vlan-id 2253;
+    }
+{% for item in vlan.config %}
+{% set vlan_ip = item.ip %}
+{% set third_octet = vlan_ip.split('.') %}
+{% set cidr = vlan_ip.split('/') %}
+    /* {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.{{ third_octet[2] }}.0/{{ cidr[1] }} */
+    v{{ item.id }} {
+        vlan-id {{ item.id }};
+        l3-interface irb.{{ item.id }};
+    }
+{% endfor %}
+}

@@ -1,0 +1,50 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split('.') %}
+{% set v6_prefix = site_ipv6_prefix.split(':') %}
+{% set transit_octet = primary_ip4.split('.') %}
+interfaces {
+    xe-0/2/0 {
+        description "CORE: {{ site_name }}-{{ floor }}-idr-001";
+        ether-options {
+            802.3ad ae0;
+        }
+    }
+    xe-1/2/0 {
+        description "CORE: {{ site_name }}-{{ floor }}-idr-001";
+        ether-options {
+            802.3ad ae0;
+        }
+    }
+    ae0 {
+        description {{ site_name }}-{{ floor }}-idr-001;
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members all;
+                }
+            }
+        }
+    }
+    vme {
+        unit 0 {
+            description "Vlan 2253 - Network Management";
+            family inet {
+                address {{ primary_ip4 }}/24;
+            }
+            family inet6 {
+                address {{ primary_ip6 }}/64 {
+                    preferred;
+                }
+                address fe80:2253::{{ transit_octet[3] }}/64;
+            }
+        }
+    }
+}

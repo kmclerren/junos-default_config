@@ -1,0 +1,9 @@
+---
+- name: building hosts file
+  template: >
+    src=hosts.j2
+    dest=./build/hosts/hosts-{{ inventory_hostname }}.conf.part
+- name: building bind file
+  template: >
+    src=bind.j2
+    dest=./build/bind/hosts-{{ inventory_hostname }}.conf.part

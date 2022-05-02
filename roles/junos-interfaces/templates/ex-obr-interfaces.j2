@@ -1,0 +1,325 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split('.') %}
+{% set v6_prefix = site_ipv6_prefix.split(':') %}
+{% set transit_octet = primary_ip4.split('.') %}
+interfaces {
+    xe-0/0/0 {
+        description "CORE: {{ site_name }}-net-icr-001";
+        ether-options {
+            802.3ad ae0;
+        }
+    }
+    xe-0/0/1 {
+        description "oob 001";
+        ether-options {
+            802.3ad ae1;
+        }
+    }
+    xe-0/0/2 {
+        description "oob 002";
+        ether-options {
+            802.3ad ae2;
+        }
+    }
+    xe-0/0/3 {
+        description "oob 003";
+        ether-options {
+            802.3ad ae3;
+        }
+    }
+    xe-0/0/4 {
+        description "oob 004";
+        ether-options {
+            802.3ad ae4;
+        }
+    }
+    xe-0/0/5 {
+        description "oob 005";
+        ether-options {
+            802.3ad ae5;
+        }
+    }
+    xe-0/0/6 {
+        description "oob 006";
+        ether-options {
+            802.3ad ae6;
+        }
+    }
+    xe-0/0/7 {
+        description "oob 007";
+        ether-options {
+            802.3ad ae7;
+        }
+    }
+    xe-1/0/0 {
+        description "CORE: {{ site_name }}-net-icr-001";
+        ether-options {
+            802.3ad ae0;
+        }
+    }
+    xe-1/0/1 {
+        description "oob 001";
+        ether-options {
+            802.3ad ae1;
+        }
+    }
+    xe-1/0/2 {
+        description "oob 002";
+        ether-options {
+            802.3ad ae2;
+        }
+    }
+    xe-1/0/3 {
+        description "oob 003";
+        ether-options {
+            802.3ad ae3;
+        }
+    }
+    xe-1/0/4 {
+        description "oob 004";
+        ether-options {
+            802.3ad ae4;
+        }
+    }
+    xe-1/0/5 {
+        description "oob 005";
+        ether-options {
+            802.3ad ae5;
+        }
+    }
+    xe-1/0/6 {
+        description "oob 006";
+        ether-options {
+            802.3ad ae6;
+        }
+    }
+    xe-1/0/7 {
+        description "oob 007";
+        ether-options {
+            802.3ad ae7;
+        }
+    }
+    ae0 {
+        description "CORE: {{ site_name }}-net-icr-001";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v2253 v200 v2252 v2248 v2016 ];
+                }
+            }
+        }
+    }
+    ae1 {
+        description "oob 001";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v2253 v2252 v2248 v2016 ];
+                }
+            }
+        }
+    }
+    ae2 {
+        description "oob 002";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v2253 v2252 v2248 v2016 ];
+                }
+            }
+        }
+    }
+    ae3 {
+        description "oob 003";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v2253 v2252 v2248 v2016 ];
+                }
+            }
+        }
+    }
+    ae4 {
+        description "oob 004";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v2253 v2252 v2248 v2016 ];
+                }
+            }
+        }
+    }
+    ae5 {
+        description "oob 005";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v2253 v2252 v2248 v2016 ];
+                }
+            }
+        }
+    }
+    ae6 {
+        description "oob 006";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v2253 v2252 v2248 v2016 ];
+                }
+            }
+        }
+    }
+    ae7 {
+        description "oob 007";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v2253 v2252 v2248 v2016 ];
+                }
+            }
+        }
+    }
+    irb {
+        unit 200 {
+            description "Vlan 200 - ipv4:{{ v4_prefix[0] }}.{{ v4_prefix[1] }}.0/23 ipv6:{{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:0::/64 - Internal Transit";
+            family inet {
+                mtu 1500;
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.1.253/23;
+            }
+            family inet6 {
+                mtu 1500;
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:200::1:253/64 {
+                    preferred;
+                }
+                address fe80:200::1:253/64;
+            }
+        }
+        unit 2248 {
+            description "Vlan 2248 - ipv4: {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.248.0/24 ipv6: {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2248::/64 - iLO Management";
+            family inet {
+                mtu 9000;
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.248.1/24;
+            }
+            family inet6 {
+                mtu 9000;
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2248::1/64 {
+                    preferred;
+                }
+                address fe80:2248::1/64;
+            }
+        }
+        unit 2252 {
+            description "Vlan 2252 - ipv4: {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.252.0/24 ipv6: {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2252::/64 - Infrastructure Management";
+            family inet {
+                mtu 9000;
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.252.1/24;
+            }
+            family inet6 {
+                mtu 9000;
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2252::1/64 {
+                   preferred;
+                }
+                address fe80:2252::1/64;
+            }
+        }
+        unit 2253 {
+            description "Vlan 2253 - ipv4: {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.0/24 ipv6: {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2253::/64 - Network Management";
+            family inet {
+                mtu 9000;
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.1/24;
+            }
+            family inet6 {
+                mtu 9000;
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2253::1/64 {
+                    preferred;
+                }
+                address fe80:2253::1/64;
+            }
+        }
+    }
+    vme {
+        unit 0 {
+            description "Vlan 2253 - Network Management";
+            family inet {
+                address {{ primary_ip4 }}/24;
+            }
+            family inet6 {
+                address {{ primary_ip6 }}/64;
+            }
+        }
+    }
+    lo0 {
+        unit 0 {
+            family inet {
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.2/32;
+            }
+            family inet6 {
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:ffff:{{ v4_prefix[0] }}:{{ v4_prefix[1] }}:254:2/128;
+            }
+        }
+    }
+}

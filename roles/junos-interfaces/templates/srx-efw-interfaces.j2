@@ -1,0 +1,236 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split(".") %}
+{% set v6_prefix = site_ipv6_prefix.split(":") %}
+{% set v4_pub_prefix = site_ipv4_public_prefix.split(".") %}
+interfaces {
+    xe-0/0/0 {
+        description uplink;
+        gigether-options {
+            redundant-parent reth1;
+        }
+    }
+    xe-0/0/3 {
+        description uplink;
+        gigether-options {
+            redundant-parent reth1;
+        }
+    }
+    xe-0/0/4 {
+        description uplink;
+        gigether-options {
+            redundant-parent reth1;
+        }
+    }
+    xe-0/0/7 {
+        description uplink;
+        gigether-options {
+            redundant-parent reth1;
+        }
+    }
+    xe-7/0/0 {
+        description uplink;
+        gigether-options {
+            redundant-parent reth1;
+        }
+    }
+    xe-7/0/3 {
+        description uplink;
+        gigether-options {
+            redundant-parent reth1;
+        }
+    }
+    xe-7/0/4 {
+        description uplink;
+        gigether-options {
+            redundant-parent reth1;
+        }
+    }
+    xe-7/0/7 {
+        description uplink;
+        gigether-options {
+            redundant-parent reth1;
+        }
+    }
+    lo0 {
+        /* inside vr */
+        unit 0 {
+            family inet {
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.1/32;
+            }
+            family inet6 {
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:ffff::1/128;
+            }
+        }
+        /* isp01 vr */
+        unit 1 {
+            family inet {
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.1/32;
+            }
+            family inet6 {
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:ffff::1/128;
+            }
+        }
+        /* isp02 vr */
+        unit 2 {
+            family inet {
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.1/32;
+            }
+            family inet6 {
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:ffff::1/128;
+            }
+        }
+    }
+    reth1 {
+        vlan-tagging;
+        redundant-ether-options {
+            redundancy-group 1;
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 10 {
+            vlan-id 10;
+            family inet {
+                mtu 1500;
+                sampling {
+                    input;
+                    output;
+                }
+                address {{ v10_ip }};
+            }
+            family inet6 {
+                sampling {
+                    input;
+                    output;
+                }
+                address {{ v10_ip6 }};
+                address fe80:10::2/64;
+            }
+        }
+        unit 11 {
+            vlan-id 11;
+            family inet {
+                mtu 1500;
+                sampling {
+                    input;
+                    output;
+                }
+                address {{ v11_ip }};
+            }
+            family inet6 {
+                mtu 1500;
+                sampling {
+                    input;
+                    output;
+                }
+                address {{ v11_ip6 }};
+                address fe80:11::2/64;
+            }
+        }
+        unit 200 {
+            vlan-id 200;
+            family inet {
+                mtu 1500;
+                sampling {
+                    input;
+                    output;
+                }
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.0.1/23;
+            }
+            family inet6 {
+                mtu 1500;
+                sampling {
+                    input;
+                    output;
+                }
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:200::1/64 {
+                    preferred;
+                }
+                address fe80:200::1/64;
+            }
+        }
+    }
+    st0 {
+        unit 0 {
+            description "ipv4 tunnel to {{ hub_a_name }}-net-vpn-001";
+            family inet {
+                mtu 1400;
+                sampling {
+                    input;
+                    output;
+                }
+            }
+        }
+        unit 1 {
+            description "ipv4 tunnel to {{ hub_a_name }}-net-vpn-002";
+            family inet {
+                mtu 1400;
+                sampling {
+                    input;
+                    output;
+                }
+            }
+        }
+        unit 2 {
+            description "ipv6 tunnel to {{ hub_a_name }}-net-vpn-001";
+            family inet6 {
+                mtu 1400;
+                sampling {
+                    input;
+                    output;
+                }
+            }
+        }
+        unit 3 {
+            description "ipv6 tunnel to {{ hub_a_name }}-net-vpn-002";
+            family inet6 {
+                mtu 1400;
+                sampling {
+                    input;
+                    output;
+                }
+            }
+        }
+        unit 4 {
+            description "ipv4 tunnel to {{ hub_b_name }}-net-vpn-001";
+            family inet {
+                mtu 1400;
+                sampling {
+                    input;
+                    output;
+                }
+            }
+        }
+        unit 5 {
+            description "ipv4 tunnel to {{ hub_b_name }}-net-vpn-002";
+            family inet {
+                mtu 1400;
+                sampling {
+                    input;
+                    output;
+                }
+            }
+        }
+        unit 6 {
+            description "ipv6 tunnel to {{ hub_b_name }}-net-vpn-001";
+            family inet6 {
+                mtu 1400;
+                sampling {
+                    input;
+                    output;
+                }
+            }
+        }
+        unit 7 {
+            description "ipv6 tunnel to {{ hub_b_name }}-net-vpn-002";
+            family inet6 {
+                mtu 1400;
+                sampling {
+                    input;
+                    output;
+                }
+            }
+        }
+    }
+}

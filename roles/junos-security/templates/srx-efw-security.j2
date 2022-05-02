@@ -1,0 +1,347 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split(".") %}
+{% set v6_prefix = site_ipv6_prefix.split(":") %}
+{% set v4_pub_prefix = site_ipv4_public_prefix.split(".") %}
+{% set v10_ip_split = v10_ip.split("/") %}
+{% set v11_ip_split = v11_ip.split("/") %}
+{% set v10_ip6_split = v10_ip6.split("/") %}
+{% set v11_ip6_split = v11_ip6.split("/") %}
+
+security {
+    ike {
+        proposal ike_proposal01 {
+            authentication-method pre-shared-keys;
+            dh-group group19;
+            authentication-algorithm sha1;
+            encryption-algorithm aes-128-cbc;
+        }
+        policy {{ hub_a_name }}-net_ike-policy01 {
+            mode main;
+            proposal-set standard;
+            pre-shared-key ascii-text "ZZZZZZZ"; ## SECRET-DATA
+        }
+        policy ike_policy01 {
+            mode main;
+            proposals ike_proposal01;
+            pre-shared-key ascii-text "ZZZZZZZZZ"; ## SECRET-DATA
+        }
+        gateway {{ hub_a_name }}-net-vpn-001_v4 {
+            ike-policy ike_policy01;
+            address {{ hub_a_endpoint_1_ip4 }};
+            dead-peer-detection;
+            local-identity inet {{ v10_ip_split[0] }};
+            external-interface reth1.10;
+            local-address {{ v10_ip_split[0] }};
+        }
+        gateway {{ hub_a_name }}-net-vpn-002_v4 {
+            ike-policy ike_policy01;
+            address {{ hub_a_endpoint_2_ip4 }};
+            dead-peer-detection;
+            local-identity inet {{ v11_ip_split[0] }};
+            external-interface reth1.11;
+            local-address {{ v11_ip_split[0] }};
+        }
+        gateway {{ hub_a_name }}-net-vpn-001_v6 {
+            ike-policy ike_policy01;
+            address {{ hub_a_endpoint_1_ip6 }};
+            dead-peer-detection;
+            local-identity inet6 {{ v10_ip6_split[0] }};
+            external-interface reth1.10;
+            local-address {{ v10_ip6_split[0] }};
+        }
+        gateway {{ hub_a_name }}-net-vpn-002_v6 {
+            ike-policy ike_policy01;
+            address {{ hub_a_endpoint_2_ip6 }};
+            dead-peer-detection;
+            local-identity inet6 {{ v11_ip6_split[0] }};
+            external-interface reth1.11;
+            local-address {{ v11_ip6_split[0] }};
+        }
+        gateway {{ hub_b_name }}-net-vpn-001_v4 {
+            ike-policy ike_policy01;
+            address {{ hub_b_endpoint_1_ip4 }};
+            dead-peer-detection;
+            local-identity inet {{ v10_ip_split[0] }};
+            external-interface reth1.10;
+            local-address {{ v10_ip_split[0] }};
+        }
+        gateway {{ hub_b_name }}-net-vpn-002_v4 {
+            ike-policy ike_policy01;
+            address {{ hub_b_endpoint_2_ip4 }};
+            dead-peer-detection;
+            local-identity inet {{ v11_ip_split[0] }};
+            external-interface reth1.11;
+            local-address {{ v11_ip_split[0] }};
+        }
+        gateway {{ hub_b_name }}-net-vpn-001_v6 {
+            ike-policy ike_policy01;
+            address {{ hub_b_endpoint_1_ip6 }};
+            dead-peer-detection;
+            local-identity inet6 {{ v10_ip6_split[0] }};
+            external-interface reth1.10;
+            local-address {{ v10_ip6_split[0] }};
+        }
+        gateway {{ hub_b_name }}-net-vpn-002_v6 {
+            ike-policy ike_policy01;
+            address {{ hub_b_endpoint_2_ip6 }};
+            dead-peer-detection;
+            local-identity inet6 {{ v11_ip6_split[0] }};
+            external-interface reth1.11;
+            local-address {{ v11_ip6_split[0] }};
+        }
+    }
+    ipsec {
+        policy standard-policy {
+            proposal-set standard;
+        }
+        vpn {{ hub_a_name }}-net-vpn-001_v4 {
+            bind-interface st0.0;
+            df-bit copy;
+            ike {
+                gateway {{ hub_a_name }}-net-vpn-001_v4;
+                ipsec-policy standard-policy;
+            }
+            establish-tunnels immediately;
+        }
+        vpn {{ hub_a_name }}-net-vpn-002_v4 {
+            bind-interface st0.1;
+            df-bit copy;
+            ike {
+                gateway {{ hub_a_name }}-net-vpn-002_v4;
+                ipsec-policy standard-policy;
+            }
+            establish-tunnels immediately;
+        }
+        vpn {{ hub_a_name }}-net-vpn-001_v6 {
+            bind-interface st0.2;
+            df-bit copy;
+            ike {
+                gateway {{ hub_a_name }}-net-vpn-001_v6;
+                ipsec-policy standard-policy;
+            }
+            establish-tunnels immediately;
+        }
+        vpn {{ hub_a_name }}-net-vpn-002_v6 {
+            bind-interface st0.3;
+            df-bit copy;
+            ike {
+                gateway {{ hub_a_name }}-net-vpn-002_v6;
+                ipsec-policy standard-policy;
+            }
+            establish-tunnels immediately;
+        }
+        vpn {{ hub_b_name }}-net-vpn-001_v4 {
+            bind-interface st0.4;
+            df-bit copy;
+            ike {
+                gateway {{ hub_b_name }}-net-vpn-001_v4;
+                ipsec-policy standard-policy;
+            }
+            establish-tunnels immediately;
+        }
+        vpn {{ hub_b_name }}-net-vpn-002_v4 {
+            bind-interface st0.5;
+            df-bit copy;
+            ike {
+                gateway {{ hub_b_name }}-net-vpn-002_v4;
+                ipsec-policy standard-policy;
+            }
+            establish-tunnels immediately;
+        }
+        vpn {{ hub_b_name }}-net-vpn-001_v6 {
+            bind-interface st0.6;
+            df-bit copy;
+            ike {
+                gateway {{ hub_b_name }}-net-vpn-001_v6;
+                ipsec-policy standard-policy;
+            }
+            establish-tunnels immediately;
+        }
+        vpn {{ hub_b_name }}-net-vpn-002_v6 {
+            bind-interface st0.7;
+            df-bit copy;
+            ike {
+                gateway {{ hub_b_name }}-net-vpn-002_v6;
+                ipsec-policy standard-policy;
+            }
+            establish-tunnels immediately;
+        }
+    }
+    alg {
+        dns disable;
+        ftp disable ftps-extension;
+        h323 disable;
+        mgcp disable;
+        msrpc disable;
+        sunrpc disable;
+        rtsp disable;
+        talk disable;
+        tftp disable;
+        pptp disable;
+    }
+    forwarding-options {
+        family {
+            inet6 {
+                mode flow-based;
+            }
+        }
+    }
+    flow {
+        allow-embedded-icmp;
+        allow-reverse-ecmp;
+        ipsec-performance-acceleration;
+        tcp-mss {
+            ipsec-vpn {
+                mss 1350;
+            }
+        }
+        tcp-session {
+            no-syn-check;
+            no-sequence-check;
+            maximum-window 1M;
+        }
+        power-mode-ipsec;
+    }
+    nat {
+        source {
+            pool default_nat {
+                routing-instance {
+                    {{ site_name }}-default;
+                }
+                address {
+{% for item in nat_pool %}
+                    {{ item.ip }};
+{% endfor %}
+                }
+            }
+            address-persistent;
+            rule-set inside_to_outside_NAT {
+                from interface reth1.200;
+                to interface [ st0.0 st0.1 st0.2 st0.3 st0.4 st0.5 st0.6 st0.7 ];
+                rule rfc1918_no-nat {
+                    match {
+                        source-address 0.0.0.0/0;
+                        destination-address [ 10.0.0.0/8 192.168.0.0/16 172.16.0.0/12 ];
+                    }
+                    then {
+                        source-nat {
+                            off;
+                        }
+                    }
+                }
+                rule default_nat {
+                    match {
+                        source-address 0.0.0.0/0;
+                    }
+                    then {
+                        source-nat {
+                            pool {
+                                default_nat;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    policies {
+        from-zone inside to-zone inside {
+            policy ssh_timeout_modifier {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application tcp_22;
+                }
+                then {
+                    permit;
+                }
+            }
+            policy default_permit {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    permit {
+                        tcp-options {
+                            window-scale;
+                        }
+                    }
+                }
+            }
+        }
+        global {
+            policy multi_zone_permit {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application [ junos-icmp-all junos-icmp6-all udp_traceroute ];
+                    from-zone any;
+                    to-zone any;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
+    }
+    zones {
+        security-zone inside {
+            tcp-rst;
+            host-inbound-traffic {
+                system-services {
+                    ping;
+                    traceroute;
+                    snmp;
+                }
+                protocols {
+                    ospf;
+                    ospf3;
+                    bfd;
+                    bgp;
+                }
+            }
+            interfaces {
+                reth1.200;
+                st0.0;
+                st0.1;
+                st0.2;
+                st0.3;
+                st0.4;
+                st0.5;
+                st0.6;
+                st0.7;
+                lo0.0;
+            }
+        }
+        security-zone isp01 {
+            tcp-rst;
+            host-inbound-traffic {
+                system-services {
+                    ping;
+                    traceroute;
+                    ike;
+                }
+            }
+            interfaces {
+                reth1.10;
+                lo0.1;
+            }
+        }
+        security-zone isp02 {
+            tcp-rst;
+            host-inbound-traffic {
+                system-services {
+                    ping;
+                    traceroute;
+                    ike;
+                }
+            }
+            interfaces {
+                reth1.11;
+                lo0.2;
+            }
+        }
+    }
+}

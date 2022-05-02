@@ -1,0 +1,169 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split('.') %}
+{% set v6_prefix = site_ipv6_prefix.split(':') %}
+protocols {
+    lldp {
+        port-id-subtype interface-name;
+        port-description-type interface-alias;
+        neighbour-port-info-display port-id;
+        interface all;
+    }
+    igmp-snooping {
+        vlan all;
+    }
+    layer2-control {
+        nonstop-bridging;
+        bpdu-block {
+            disable-timeout 1800;
+        }
+    }
+    vstp {
+        bpdu-block-on-edge;
+        interface all;
+        vlan all;
+        interface ge-0/0/0 {
+            edge;
+        }
+        interface ge-0/0/1 {
+            edge;
+        }
+        interface ge-0/0/2 {
+            edge;
+        }
+        interface ge-0/0/3 {
+            edge;
+        }
+        interface ge-0/0/4 {
+            edge;
+        }
+        interface ge-0/0/5 {
+            edge;
+        }
+        interface ge-0/0/6 {
+            edge;
+        }
+        interface ge-0/0/7 {
+            edge;
+        }
+        interface ge-0/0/8 {
+            edge;
+        }
+        interface ge-0/0/9 {
+            edge;
+        }
+        interface ge-0/0/10 {
+            edge;
+        }
+        interface ge-0/0/11 {
+            edge;
+        }
+        interface ge-0/0/12 {
+            edge;
+        }
+        interface ge-0/0/13 {
+            edge;
+        }
+        interface ge-0/0/14 {
+            edge;
+        }
+        interface ge-0/0/15 {
+            edge;
+        }
+        interface ge-0/0/16 {
+            edge;
+        }
+        interface ge-0/0/17 {
+            edge;
+        }
+        interface ge-0/0/18 {
+            edge;
+        }
+        interface ge-0/0/19 {
+            edge;
+        }
+        interface ge-0/0/20 {
+            edge;
+        }
+        interface ge-0/0/21 {
+            edge;
+        }
+        interface ge-0/0/22 {
+            edge;
+        }
+        interface ge-0/0/23 {
+            edge;
+        }
+        interface ge-0/0/24 {
+            edge;
+        }
+        interface ge-0/0/25 {
+            edge;
+        }
+        interface ge-0/0/26 {
+            edge;
+        }
+        interface ge-0/0/27 {
+            edge;
+        }
+        interface ge-0/0/28 {
+            edge;
+        }
+        interface ge-0/0/29 {
+            edge;
+        }
+        interface ge-0/0/30 {
+            edge;
+        }
+        interface ge-0/0/31 {
+            edge;
+        }
+        interface ge-0/0/32 {
+            edge;
+        }
+        interface ge-0/0/33 {
+            edge;
+        }
+        interface ge-0/0/34 {
+            edge;
+        }
+        interface ge-0/0/35 {
+            edge;
+        }
+        interface ge-0/0/36 {
+            edge;
+        }
+        interface ge-0/0/37 {
+            edge;
+        }
+        interface ge-0/0/38 {
+            edge;
+        }
+        interface ge-0/0/39 {
+            edge;
+        }
+        interface ge-0/0/40 {
+            edge;
+        }
+        interface ge-0/0/41 {
+            edge;
+        }
+        interface ge-0/0/42 {
+            edge;
+        }
+        interface ge-0/0/43 {
+            edge;
+        }
+        interface ge-0/0/44 {
+            edge;
+        }
+        interface ge-0/0/45 {
+            edge;
+        }
+        interface ge-0/0/46 {
+            edge;
+        }
+        interface ge-0/0/47 {
+            edge;
+        }
+    }
+}

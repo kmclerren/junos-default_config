@@ -1,0 +1,135 @@
+---
+- hosts: dat
+  connection: local
+  gather_facts: no
+  roles:
+    - junos-common
+    - junos-chassis
+    - junos-virtual_chassis
+    - junos-routing_options
+    - junos-poe
+    - junos-switch_options
+    - junos-forwarding_options
+    - junos-interfaces
+    - junos-protocols
+    - junos-vlans
+    - junos-groups
+    - hosts
+
+- hosts: oob
+  connection: local
+  gather_facts: no
+  roles:
+    - junos-common
+    - junos-chassis
+    - junos-virtual_chassis
+    - junos-routing_options
+    - junos-poe
+    - junos-interfaces
+    - junos-protocols
+    - junos-vlans
+    - junos-groups
+    - hosts
+
+- hosts: efw
+  connection: local
+  gather_facts: no
+  roles:
+    - junos-common
+    - junos-groups
+    - junos-chassis
+    - junos-security
+    - junos-interfaces
+    - junos-forwarding_options
+    - junos-routing_options
+    - junos-policy_options
+    - junos-routing_instances
+    - junos-applications
+    - junos-services
+    - junos-protocols
+    - hosts
+
+- hosts: efw_01b
+  connection: local
+  gather_facts: no
+  roles:
+    - hosts
+
+- hosts: icr
+  connection: local
+  gather_facts: no
+  roles:
+    - junos-common
+    - junos-virtual_chassis
+    - junos-firewall
+    - junos-routing_options
+    - junos-chassis
+    - junos-interfaces
+    - junos-protocols
+    - junos-routing_instances
+    - junos-vlans
+    - junos-forwarding_options
+    - junos-policy_options
+    - junos-groups
+    - hosts
+
+- hosts: idr
+  connection: local
+  gather_facts: no
+  roles:
+    - junos-common
+    - junos-virtual_chassis
+    - junos-routing_options
+    - junos-chassis
+    - junos-interfaces
+    - junos-protocols
+    - junos-routing_instances
+    - junos-vlans
+    - junos-forwarding_options
+    - junos-policy_options
+    - hosts
+
+- hosts: obr
+  connection: local
+  gather_facts: no
+  roles:
+    - junos-common
+    - junos-virtual_chassis
+    - junos-routing_options
+    - junos-chassis
+    - junos-interfaces
+    - junos-protocols
+    - junos-routing_instances
+    - junos-vlans
+    - junos-forwarding_options
+    - junos-policy_options
+    - hosts
+
+- hosts: uts
+  connection: local
+  gather_facts: no
+  roles:
+    - junos-common
+    - junos-chassis
+    - junos-virtual_chassis
+    - junos-routing_options
+    - junos-poe
+    - junos-interfaces
+    - junos-protocols
+    - junos-vlans
+    - junos-groups
+    - hosts
+
+- hosts: s01
+  connection: local
+  gather_facts: no
+  roles:
+    - junos-common
+    - junos-chassis
+    - junos-virtual_chassis
+    - junos-routing_options
+    - junos-interfaces
+    - junos-switch_options
+    - junos-protocols
+    - junos-vlans
+    - hosts

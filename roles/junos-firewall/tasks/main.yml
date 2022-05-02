@@ -1,0 +1,5 @@
+---
+- name: building firewall configuration
+  template: >
+    src={{ firewall_template }}
+    dest={{ build_directory }}/01firewall.conf.part

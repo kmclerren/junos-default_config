@@ -1,0 +1,38 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split('.') %}
+{% set v6_prefix = site_ipv6_prefix.split(':') %}
+---
+{% raw %}
+# configuration templates
+common_template: "common.j2"
+chassis_template: "chassis.j2"
+virtual_chassis_template: "ex-virtual_chassis.j2"
+routing_options_template: "ex-layer2-routing_options.j2"
+switch_options_template: "ex-s01-switch_options.j2"
+forwarding_options_template: "ex-dat-forwarding_options.j2"
+
+# interfaces_template default: ex-s01-interfaces.j2
+# interfaces_template custom: interfaces_{{ inventory_hostname }}.j2
+interfaces_template: "ex-s01-interfaces.j2"
+protocols_template: "ex-s01-protocols.j2"
+vlans_template: "ex-s01-vlans.j2"
+
+{% endraw %}
+
+{% set auto_floor = inventory_hostname.split('-') %}
+floor: {{ auto_floor[1] }}
+
+# primary_ip4/6 - vme management IP
+primary_ip4: {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.{{ last_octet }}
+primary_ip6: {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2253::{{ last_octet }}
+
+# virtual_chassis - ex virtual chassis config. add each FPC member. no split is used for 2 member chassis.
+virtual_chassis:
+  no_split: true
+  config:
+    - member: 0
+      role: routing-engine
+      sn: REPLACE
+    - member: 1
+      role: routing-engine
+      sn: REPLACE

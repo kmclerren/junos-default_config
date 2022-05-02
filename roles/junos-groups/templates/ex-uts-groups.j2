@@ -1,0 +1,64 @@
+#jinja2: lstrip_blocks: True
+groups {
+    access_points {
+        interfaces {
+            <ge-*> {
+                description "v2002 - Wireless transit";
+                native-vlan-id 2002;
+                unit 0 {
+                    family ethernet-switching {
+                        interface-mode trunk;
+                        vlan {
+                            members [ v2002 v2008 v2100 ];
+                        }
+                    }
+                }
+            }
+        }
+    }
+    physical_security {
+        interfaces {
+            <ge-*> {
+                description "v2023 - Physical security";
+                unit 0 {
+                    family ethernet-switching {
+                        interface-mode access;
+                        vlan {
+                            members v2023;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    audio_visual {
+        interfaces {
+            <ge-*> {
+                description "v2024 - Audio visual";
+                unit 0 {
+                    family ethernet-switching {
+                        interface-mode access;
+                        vlan {
+                            members v2024;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    inf_mgmt {
+        interfaces {
+            <ge-*> {
+                description "v2252 - Infrastructure management";
+                unit 0 {
+                    family ethernet-switching {
+                        interface-mode access;
+                        vlan {
+                            members v2252;
+                        }
+                    }
+                }
+            }
+        }                               
+    }
+}

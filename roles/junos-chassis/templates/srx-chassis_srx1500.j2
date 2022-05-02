@@ -1,0 +1,23 @@
+#jinja2: lstrip_blocks: True
+chassis {
+    cluster {
+        control-link-recovery;
+        reth-count 2;
+        redundancy-group 0 {
+            node 0 priority 110;
+            node 1 priority 1;
+        }
+        redundancy-group 1 {
+            node 1 priority 1;
+            node 0 priority 110;
+            preempt;
+            hold-down-interval 300;
+            interface-monitor {
+                xe-0/0/18 weight 255;
+                xe-0/0/19 weight 255;
+                xe-7/0/18 weight 255;
+                xe-7/0/19 weight 255;
+            }
+        }
+    }
+}

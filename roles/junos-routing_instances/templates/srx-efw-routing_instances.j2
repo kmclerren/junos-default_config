@@ -1,0 +1,205 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split(".") %}
+{% set v6_prefix = site_ipv6_prefix.split(":") %}
+{% set v4_pub_prefix = site_ipv4_public_prefix.split(".") %}
+routing-instances {
+    {{ site_name }}-default {
+        instance-type virtual-router;
+        interface lo0.0;
+        interface reth1.200;
+        interface st0.0;
+        interface st0.1;
+        interface st0.2;
+        interface st0.3;
+        interface st0.4;
+        interface st0.5;
+        interface st0.6;
+        interface st0.7;
+        routing-options {
+            rib {{ site_name }}-default.inet6.0 {
+                static {
+                    /* {{ hub_a_name }}-net-vpn-001:lo0.0 */
+                    route {{ hub_a_lo0_1_ipv6 }}/128 next-hop st0.2;
+                    /* {{ hub_a_name }}-net-vpn-002:lo0.0 */
+                    route {{ hub_a_lo0_2_ipv6 }}/128 next-hop st0.3;
+                    /* {{ hub_b_name }}-net-vpn-001:lo0.0 */
+                    route {{ hub_b_lo0_1_ipv6 }}/128 next-hop st0.6;
+                    /* {{ hub_b_name }}-net-vpn-002:lo0.0 */
+                    route {{ hub_b_lo0_2_ipv6 }}/128 next-hop st0.7;
+                }
+            }
+            static {
+                /* {{ hub_a_name }}-net-vpn-001:lo0.0 */
+                route {{ hub_a_lo0_1_ipv4 }}/32 next-hop st0.0;
+                /* {{ hub_a_name }}-net-vpn-002:lo0.0 */
+                route {{ hub_a_lo0_2_ipv4 }}/32 next-hop st0.1;
+                /* {{ hub_b_name }}-net-vpn-001:lo0.0 */
+                route {{ hub_b_lo0_1_ipv4 }}/32 next-hop st0.4;
+                /* {{ hub_b_name }}-net-vpn-002:lo0.0 */
+                route {{ hub_b_lo0_2_ipv4 }}/32 next-hop st0.5;
+                /* nail up for bgp */
+                route {{ routed_block }} discard;
+            }
+            router-id {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.1;
+            autonomous-system {{ site_private_as }};
+        }
+        protocols {
+            bgp {
+                group {{ hub_a_name }}_MX-VPN_v4 {
+                    type external;
+                    multihop {
+                        ttl 2;
+                    }
+                    import {{ hub_a_name }}_to_{{ site_name }}_import-v4;
+                    family inet {
+                        unicast;
+                    }
+                    export {{ site_name }}_to_{{ hub_a_name }}_export-v4;
+                    peer-as {{ hub_a_asn }};
+                    local-as {{ site_private_as }};
+                    multipath;
+                    bfd-liveness-detection {
+                        minimum-interval 1000;
+                        multiplier 3;
+                    }
+                    neighbor {{ hub_a_lo0_1_ipv4 }} {
+                        local-address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.1;
+                    }
+                    neighbor {{ hub_a_lo0_2_ipv4 }} {
+                        local-address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.1;
+                    }
+                }
+                group {{ hub_a_name }}_MX-VPN_v6 {
+                    type external;
+                    multihop {
+                        ttl 2;
+                    }
+                    import {{ hub_a_name }}_to_{{ site_name }}_import-v6;
+                    family inet6 {
+                        unicast;
+                    }
+                    export {{ site_name }}_to_{{ hub_a_name }}_export-v6;
+                    peer-as {{ hub_a_asn }};
+                    local-as {{ site_private_as }};
+                    multipath;
+                    bfd-liveness-detection {
+                        minimum-interval 1000;
+                        multiplier 3;
+                    }
+                    neighbor {{ hub_a_lo0_1_ipv6 }} {
+                        local-address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:ffff::1;
+                    }
+                    neighbor {{ hub_a_lo0_2_ipv6 }} {
+                        local-address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:ffff::1;
+                    }
+                }
+                group {{ hub_b_name }}_MX-VPN_v6 {
+                    type external;
+                    multihop {
+                        ttl 2;
+                    }
+                    import {{ hub_b_name }}_to_{{ site_name }}_import-v6;
+                    family inet6 {
+                        unicast;
+                    }
+                    export {{ site_name }}_to_{{ hub_b_name }}_export-v6;
+                    peer-as {{ hub_b_asn }};
+                    local-as {{ site_private_as }};
+                    multipath;
+                    bfd-liveness-detection {
+                        minimum-interval 1000;
+                        multiplier 3;
+                    }
+                    neighbor {{ hub_b_lo0_1_ipv6 }} {
+                        local-address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:ffff::1;
+                    }
+                    neighbor {{ hub_b_lo0_2_ipv6 }} {
+                        local-address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:ffff::1;
+                    }
+                }
+                group {{ hub_b_name }}_MX-VPN_v4 {
+                    type external;
+                    multihop {
+                        ttl 2;
+                    }
+                    import {{ hub_b_name }}_to_{{ site_name }}_import-v4;
+                    family inet {
+                        unicast;
+                    }
+                    export  {{ site_name }}_to_{{ hub_b_name }}_export-v4;
+                    peer-as {{ hub_b_asn }};
+                    local-as {{ site_private_as }};
+                    multipath;
+                    bfd-liveness-detection {
+                        minimum-interval 1000;
+                        multiplier 3;
+                    }
+                    neighbor {{ hub_b_lo0_1_ipv4 }} {
+                        local-address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.1;
+                    }
+                    neighbor {{ hub_b_lo0_2_ipv4 }} {
+                        local-address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.1;
+                    }
+                }
+            }
+            ospf {
+                export DEFAULT_ROUTE_ORIGINATE_v4;
+                reference-bandwidth 1g;
+                area 0.0.0.0 {
+                    interface lo0.0 {
+                        passive;
+                    }
+                    interface reth1.200 {
+                        priority 200;
+                    }
+                }
+            }
+            ospf3 {
+                export DEFAULT_ROUTE_ORIGINATE_v6;
+                reference-bandwidth 1g;
+                area 0.0.0.0 {
+                    interface lo0.0 {
+                        passive;
+                    }
+                    interface reth1.200 {
+                        priority 200;
+                    }
+                }
+            }
+        }
+    }
+    isp01 {
+        instance-type virtual-router;
+        interface lo0.1;
+        interface reth1.10;
+        routing-options {
+            rib isp01.inet6.0 {
+                static {
+                    route ::0/0 next-hop {{ v10_ip6_gateway }};
+                }
+            }
+            static {
+                route 0.0.0.0/0 next-hop {{ v10_gateway }};
+            }
+            router-id {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.1;
+            autonomous-system {{ site_private_as }};
+        }
+    }
+    isp02 {
+        instance-type virtual-router;
+        interface lo0.2;
+        interface reth1.11;
+        routing-options {
+            rib isp02.inet6.0 {
+                static {
+                    route ::0/0 next-hop {{ v11_ip6_gateway }};
+                }
+            }
+            static {
+                route 0.0.0.0/0 next-hop {{ v11_gateway }};
+            }
+            router-id {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.1;
+            autonomous-system {{ site_private_as }};
+        }
+    }
+}

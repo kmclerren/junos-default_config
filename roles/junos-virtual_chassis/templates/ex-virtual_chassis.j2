@@ -1,0 +1,13 @@
+#jinja2: lstrip_blocks: True
+virtual-chassis {
+    preprovisioned;
+{% if virtual_chassis.no_split == true %}
+    no-split-detection;
+{% endif %}
+{% for item in virtual_chassis.config %}
+    member {{ item.member }} {
+        role {{ item.role }};
+        serial-number {{ item.sn }};
+    }
+{% endfor %}
+}

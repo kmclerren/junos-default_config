@@ -1,0 +1,5 @@
+---
+- name: building security configuration
+  template: >
+    src={{ security_template }}
+    dest={{ build_directory }}/01security.conf.part

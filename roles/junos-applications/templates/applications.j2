@@ -1,0 +1,13 @@
+#jinja2: lstrip_blocks: True
+replace:
+applications {
+    application udp_traceroute {
+        protocol udp;
+        destination-port 33434-33534;
+    }
+    application tcp_22 {
+        protocol tcp;
+        destination-port 22;
+        inactivity-timeout 28800;
+    }
+}

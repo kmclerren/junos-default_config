@@ -1,0 +1,194 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split('.') %}
+{% set v6_prefix = site_ipv6_prefix.split(':') %}
+{% set transit_octet = primary_ip4.split('.') %}
+interfaces {
+    ge-0/0/0 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/1 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/2 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/3 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/4 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/5 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/6 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/7 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/8 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/9 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/10 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/11 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/12 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/13 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/14 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/15 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/16 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/17 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/18 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/19 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/20 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/21 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/22 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/23 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/24 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/25 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/26 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/27 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/28 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/29 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/30 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/31 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/32 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/33 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/34 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/35 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/36 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/37 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/38 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/39 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/40 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/41 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/42 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/43 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/44 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/45 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/46 {
+        apply-groups network_mgmt;
+    }
+    ge-0/0/47 {
+        apply-groups network_mgmt;
+    }
+    xe-0/2/0 {
+        description "CORE: {{ site_name }}-{{ floor }}-obr-001";
+        ether-options {
+            802.3ad ae0;
+        }
+    }
+    xe-0/2/1 {
+        description "CORE: {{ site_name }}-{{ floor }}-obr-001";
+        ether-options {
+            802.3ad ae0;
+        }
+    }
+    ae0 {
+        description {{ site_name }}-{{ floor }}-idr-001;
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members all;
+                }
+            }
+        }
+    }
+    vme {
+        unit 0 {
+            description "Vlan 2253 - Network Management";
+            family inet {
+                address {{ primary_ip4 }}/24;
+            }
+            family inet6 {
+                address {{ primary_ip6 }}/64 {
+                    preferred;
+                }
+                address fe80:2253::{{ transit_octet[3] }}/64;
+            }
+        }
+    }
+}

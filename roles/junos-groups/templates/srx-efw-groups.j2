@@ -1,0 +1,90 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split(".") %}
+{% set v6_prefix = site_ipv6_prefix.split(":") %}
+groups {
+    node0 {
+        system {
+            host-name {{ site_name }}-net-efw-01a;
+            tacplus-server {
+{% for item in site_system.tacacs_server %}
+                {{ item.ip }} source-address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.238;
+{% endfor %}
+            }
+            accounting {
+                destination {
+                    tacplus {
+                        server {
+{% for item in site_system.tacacs_server %}
+                            {{ item.ip }} source-address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.238;
+{% endfor %}
+                        }
+                    }
+                }
+            }
+        }
+        interfaces {
+            fxp0 {
+                unit 0 {
+                    family inet {
+                        address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.238/24;
+                    }
+                    family inet6 {
+                        address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2253::238/64 {
+                            preferred;
+                        }
+                        address fe80:2253::238/64;
+                    }
+                }
+            }
+        }
+        snmp {
+            description {{ site_name }};
+            trap-options {
+                source-address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.238;
+            }
+        }
+    }
+    node1 {
+        system {
+            host-name {{ site_name }}-net-efw-01b;
+            tacplus-server {
+{% for item in site_system.tacacs_server %}
+                {{ item.ip }} source-address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.239;
+{% endfor %}
+            }
+            accounting {
+                destination {
+                    tacplus {
+                        server {
+{% for item in site_system.tacacs_server %}
+                            {{ item.ip }} source-address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.239;
+{% endfor %}
+                        }
+                    }
+                }
+            }
+        }
+        interfaces {
+            fxp0 {
+                unit 0 {
+                    family inet {
+                        address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.239/24;
+                    }
+                    family inet6 {
+                        address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2253::239/64 {
+                            preferred;
+                        }
+                        address fe80:2253::239/64;
+                    }
+                }
+            }
+        }
+        snmp {
+            description {{ site_name }};
+            trap-options {
+                source-address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.239;
+            }
+        }
+    }
+}
+apply-groups "${node}";

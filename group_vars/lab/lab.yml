@@ -1,0 +1,28 @@
+---
+site_name: lab
+site_ipv4_prefix: 10.200.0.0/16
+site_ipv6_prefix: 2620:222:0:2200::/48
+site_private_as: 65524
+
+# Below is deprecated. Will be removed. Keep as-is for now.
+site_ipv4_public_prefix: 1.2.3.4
+#
+
+site_system:
+  tacacs_server:
+    - ip: 192.168.1.10
+    - ip: 192.168.1.11
+  syslog_server:
+    - ip: 192.168.1.10
+    - ip: 192.168.1.11
+  ntp_server:
+    - ip: 192.168.1.10
+    - ip: 192.168.1.11
+  dhcp_server:
+    - ip: 192.168.1.10
+    - ip: 192.168.1.11
+  dns_server:
+    - ip: 192.168.1.10
+    - ip: 192.168.1.11
+  snmp_server:
+    - ip: 192.168.1.10

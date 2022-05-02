@@ -1,0 +1,21 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split('.') %}
+{% set v6_prefix = site_ipv6_prefix.split(':') %}
+---
+# srx_code - The HTTP URL, version number, and package name to load onto the SRX.
+srx_code_path: "http://1.1.1.1/ztp/"
+
+# srx1500 - 15.1X49-D180.2
+# srx4100 - 15.1X49-D190.2
+srx_code_version: 15.1X49-D190.2
+
+# srx1500 - junos-srxentedge-15.1X49-D180.2-domestic.tgz
+# srx4100 - junos-srxmr-15.1X49-D190.2-domestic.tgz
+srx_code_package: junos-srxmr-15.1X49-D190.2-domestic.tgz
+
+cluster_id: 1
+node_id: 1
+
+# fxp0 ip address (hard coded)
+primary_ip4: {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.239
+primary_ip6: {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2253::239

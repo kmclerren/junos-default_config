@@ -1,0 +1,556 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split('.') %}
+{% set v6_prefix = site_ipv6_prefix.split(':') %}
+{% set transit_octet = primary_ip4.split('.') %}
+interfaces {
+    {{ dia_uplink_type }}-0/0/0 {
+        description "PEERING: {{ isp_a_description }}";
+        unit 0 {
+            family ethernet-switching {
+                interface-mode access;
+                vlan {
+                    members v10;
+                }
+            }
+        }
+    }
+    xe-0/0/3 {
+        description "CORE: {{ site_name }}-net-efw-01a";
+        ether-options {
+            802.3ad ae1;
+        }
+    }
+    xe-0/0/4 {
+        description "CORE: {{ site_name }}-net-efw-01a";
+        ether-options {
+            802.3ad ae1;
+        }
+    }
+    xe-0/0/5 {
+        description "CORE: {{ site_name }}-net-efw-01a";
+        ether-options {
+            802.3ad ae1;
+        }
+    }
+    xe-0/0/6 {
+        description "CORE: {{ site_name }}-net-efw-01a";
+        ether-options {
+            802.3ad ae1;
+        }
+    }
+    xe-0/0/10 {
+        description "CORE: idr 01 uplink - update description";
+        ether-options {
+            802.3ad ae10;
+        }
+    }
+    xe-0/0/11 {
+        description "CORE: idr 02 uplink - update description";
+        ether-options {
+            802.3ad ae11;
+        }
+    }
+    xe-0/0/12 {
+        description "CORE: idr 03 uplink - update description";
+        ether-options {
+            802.3ad ae12;
+        }
+    }
+    xe-0/0/13 {
+        description "CORE: idr 04 uplink - update description";
+        ether-options {
+            802.3ad ae13;
+        }
+    }
+    xe-0/0/14 {
+        description "CORE: idr 05 uplink - update description";
+        ether-options {
+            802.3ad ae14;
+        }
+    }
+    xe-0/0/15 {
+        description "CORE: idr 06 uplink - update description";
+        ether-options {
+            802.3ad ae15;
+        }
+    }
+    xe-0/0/18 {
+        description "CORE: {{ site_name }}-net-s01-001";
+        ether-options {
+            802.3ad ae18;
+        }
+    }
+    xe-0/0/23 {
+        description "CORE: {{ site_name }}-net-obr-001";
+        ether-options {
+            802.3ad ae9;
+        }
+    }
+    {{ dia_uplink_type }}-1/0/0 {
+        description "PEERING: {{ isp_b_description }}";
+        unit 0 {
+            family ethernet-switching {
+                interface-mode access;
+                vlan {
+                    members v11;
+                }
+            }
+        }
+    }
+    xe-1/0/3 {
+        description "CORE: {{ site_name }}-net-efw-01b";
+        ether-options {
+            802.3ad ae2;
+        }
+    }
+    xe-1/0/4 {
+        description "CORE: {{ site_name }}-net-efw-01b";
+        ether-options {
+            802.3ad ae2;
+        }
+    }
+    xe-1/0/5 {
+        description "CORE: {{ site_name }}-net-efw-01b";
+        ether-options {
+            802.3ad ae2;
+        }
+    }
+    xe-1/0/6 {
+        description "CORE: {{ site_name }}-net-efw-01b";
+        ether-options {
+            802.3ad ae2;
+        }
+    }
+    xe-1/0/10 {
+        description "CORE: idr 01 uplink - update description";
+        ether-options {
+            802.3ad ae10;
+        }
+    }
+    xe-1/0/11 {
+        description "CORE: idr 02 uplink - update description";
+        ether-options {
+            802.3ad ae11;
+        }
+    }
+    xe-1/0/12 {
+        description "CORE: idr 03 uplink - update description";
+        ether-options {
+            802.3ad ae12;
+        }
+    }
+    xe-1/0/13 {
+        description "CORE: idr 04 uplink - update description";
+        ether-options {
+            802.3ad ae13;
+        }
+    }
+    xe-1/0/14 {
+        description "CORE: idr 05 uplink - update description";
+        ether-options {
+            802.3ad ae14;
+        }
+    }
+    xe-1/0/15 {
+        description "CORE: idr 06 uplink - update description";
+        ether-options {
+            802.3ad ae15;
+        }
+    }
+    xe-1/0/18 {
+        description "CORE: {{ site_name }}-net-s01-001";
+        ether-options {
+            802.3ad ae18;
+        }
+    }
+    xe-1/0/23 {
+        description "CORE: {{ site_name }}-net-obr-001";
+        ether-options {
+            802.3ad ae9;
+        }
+    }
+    ae1 {
+        description "CORE: {{ site_name }}-net-efw-01a";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v200 v10 v11 v20 ];
+                }
+            }
+        }
+    }
+    ae2 {
+        description "CORE: {{ site_name }}-net-efw-01b";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v200 v10 v11 v20 ];
+                }
+            }
+        }
+    }
+    ae9 {
+        description "CORE: {{ site_name }}-net-obr-001";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v200 v2253 v2252 v2248 v2015 v2016 ];
+                }
+            }
+        }
+    }
+    ae10 {
+        description "CORE: idr 01 uplink - update description";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v200 v2024 v2253 v2023 v2002 v2200 v2100 v2008 ];
+                }
+            }
+        }
+    }
+    ae11 {
+        description "CORE: idr 02 uplink - update description";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v200 v2024 v2253 v2023 v2002 v2200 v2100 v2008 ];
+                }
+            }
+        }
+    }
+    ae12 {
+        description "CORE: idr 03 uplink - update description";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v200 v2024 v2253 v2023 v2002 v2200 v2100 v2008 ];
+                }
+            }
+        }
+    }
+    ae13 {
+        description "CORE: idr 04 uplink - update description";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v200 v2024 v2253 v2023 v2002 v2200 v2100 v2008 ];
+                }
+            }
+        }
+    }
+    ae14 {
+        description "CORE: idr 05 uplink - update description";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v200 v2024 v2253 v2023 v2002 v2200 v2100 v2008 ];
+                }
+            }
+        }
+    }
+    ae15 {
+        description "CORE: idr 06 uplink - update description";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v200 v2024 v2253 v2023 v2002 v2200 v2100 v2008 ];
+                }
+            }
+        }
+    }
+    ae18 {
+        description "CORE: {{ site_name }}-net-s01-001";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v2253 v2023 v2015 v2014 v2200 v2114 ];
+                }
+            }
+        }
+    }
+    irb {
+        unit 200 {
+            description "Vlan 200 - ipv4:{{ v4_prefix[0] }}.{{ v4_prefix[1] }}.0/23 ipv6:{{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:200::/64 - Internal Transit";
+            family inet {
+                mtu 1500;
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.1.254/23;
+            }
+            family inet6 {
+                mtu 1500;
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:200::1:254/64 {
+                    preferred;
+                }
+                address fe80:200::1:254/64;
+            }
+        }
+        unit 2002 {
+            description "Vlan 2002 - ipv4:{{ v4_prefix[0] }}.{{ v4_prefix[1] }}.2.0/24 ipv6:{{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2002::/64 - Wireless Transit";
+            family inet {
+                mtu 9000;
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.2.1/24;
+            }
+            family inet6 {
+                mtu 9000;
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2002::1/64 {
+                    preferred;
+                }
+                address fe80:2002::1/64;
+            }
+        }
+        unit 2008 {
+            description "Vlan 2008 - ipv4:{{ v4_prefix[0] }}.{{ v4_prefix[1] }}.8.0/22 ipv6:{{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2008::/64 - Public Wireless";
+            family inet {
+                mtu 9000;
+                filter {
+                    input z-wireless-in;
+                }
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.8.1/22;
+            }
+            family inet6 {
+                mtu 9000;
+                filter {
+                    input z-wireless-in-v6;
+                }
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2008::1/64 {
+                    preferred;
+                }
+                address fe80:2008::1/64;
+            }
+        }
+        unit 2014 {
+            description "Vlan 2014 - ipv4:{{ v4_prefix[0] }}.{{ v4_prefix[1] }}.14.0/24 ipv6:{{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2014::/64 - Corporate Servers";
+            family inet {
+                mtu 9000;
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.14.1/24;
+            }
+            family inet6 {
+                mtu 9000;
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2014::1/64 {
+                    preferred;
+                }
+                address fe80:2014::1/64;
+            }
+        }
+        unit 2015 {
+            description "Vlan 2015 - ipv4:{{ v4_prefix[0] }}.{{ v4_prefix[1] }}.15.0/24 ipv6:{{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2015::/64 - Nutanix Management";
+            family inet {
+                mtu 9000;
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.15.1/24;
+            }
+            family inet6 {
+                mtu 9000;
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2015::1/64 {
+                    preferred;
+                }
+                address fe80:2015::1/64;
+            }
+        }
+        unit 2016 {
+            description "Vlan 2016 - ipv4:{{ v4_prefix[0] }}.{{ v4_prefix[1] }}.16.0/24 ipv6:{{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2016::/64 - zSec Servers";
+            family inet {
+                mtu 9000;
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.16.1/24;
+            }
+            family inet6 {
+                mtu 9000;
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2016::1/64 {
+                    preferred;
+                }
+                address fe80:2016::1/64;
+            }
+        }
+        unit 2023 {
+            description "Vlan 2023 - ipv4:{{ v4_prefix[0] }}.{{ v4_prefix[1] }}.23.0/24 ipv6:{{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2023::/64 - Physical Security";
+            family inet {
+                mtu 9000;
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.23.1/24;
+            }
+            family inet6 {
+                mtu 9000;
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2023::1/64 {
+                    preferred;
+                }
+                address fe80:2023::1/64;
+            }
+        }
+        unit 2024 {
+            description "Vlan 2024 - ipv4:{{ v4_prefix[0] }}.{{ v4_prefix[1] }}.24.0/24 ipv6:{{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2024::/64 - Audio Visual";
+            family inet {
+                mtu 9000;
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.24.1/24;
+            }
+            family inet6 {
+                mtu 9000;
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2024::1/64 {
+                    preferred;
+                }
+                address fe80:2024::1/64;
+            }
+        }
+        unit 2100 {
+            description "Vlan 2100 - ipv4:{{ v4_prefix[0] }}.{{ v4_prefix[1] }}.100.0/22 ipv6:{{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2100::/64 - Secure Wireless";
+            family inet {
+                mtu 9000;
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.100.1/22;
+            }
+            family inet6 {
+                mtu 9000;
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2100::1/64 {
+                    preferred;
+                }
+                address fe80:2100::1/64;
+            }
+        }
+        unit 2114 {
+            description "Vlan 2114 - ipv4:{{ v4_prefix[0] }}.{{ v4_prefix[1] }}.114.0/24 ipv6:{{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2114::/64 - Voice Servers";
+            family inet {
+                mtu 9000;
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.114.1/24;
+            }
+            family inet6 {
+                mtu 9000;
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2114::1/64 {
+                    preferred;
+                }
+            address fe80:2114::1/64;
+            }
+        }
+        unit 2200 {
+            description "Vlan 2200 - ipv4:{{ v4_prefix[0] }}.{{ v4_prefix[1] }}.200.0/24 ipv6:{{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2200::/64 - PXE SCCM (ZGSE)";
+            family inet {
+                mtu 9000;
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.200.1/24;
+            }
+            family inet6 {
+                mtu 9000;
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2200::1/64 {
+                    preferred;
+                }
+            address fe80:2200::1/64;
+            }
+        }
+{% if vlan is defined %}
+{% for item in vlan.config %}
+        unit {{ item.id }} {
+            description "Vlan {{ item.id }} - ipv4: {{ item.ip }} ipv6: {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:{{ item.id }}::/64 - {{ item.description }}";
+            family inet {
+                mtu 9000;
+                address {{ item.ip }};
+            }
+            family inet6 {
+                mtu 9000;
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:{{ item.id }}::1/64 {
+                    preferred;
+                }
+                address fe80:{{ item.id }}::1/64;
+            }
+        }
+{% endfor %}
+{% endif %}
+    }
+    lo0 {
+        unit 0 {
+            family inet {
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.254/32;
+            }
+            family inet6 {
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:ffff:{{ v4_prefix[0] }}:{{ v4_prefix[1] }}:254:254/128;
+            }
+        }
+    }
+    vme {
+        unit 0 {
+            description "Vlan 2253 - Network Management";
+            family inet {
+                address {{ primary_ip4 }}/24;
+            }
+            family inet6 {
+                address {{ primary_ip6 }}/64 {
+                    preferred;
+                }
+                address fe80:2253::{{ transit_octet[3] }}/64;
+            }
+        }
+    }
+}

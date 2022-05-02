@@ -1,0 +1,15 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split('.') %}
+{% set v6_prefix = site_ipv6_prefix.split(':') %}
+{% set transit_octet = primary_ip4.split('.') %}
+routing-options {
+    nonstop-routing;
+    rib inet6.0 {
+        static {
+            route ::0/0 next-hop {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2253::1;
+        }
+    }
+    static {
+        route 0.0.0.0/0 next-hop {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.1;
+    }
+}

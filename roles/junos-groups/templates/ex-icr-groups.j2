@@ -1,0 +1,23 @@
+#jinja2: lstrip_blocks: True
+{% if vlan is defined %}
+groups {
+{% for item in vlan.config %}
+  v{{ item.id }} {
+      interfaces {
+          "<ge-*>" {
+              description "v{{ item.id }} - {{ item.description }}";
+              unit 0 {
+                  family ethernet-switching {
+                      interface-mode access;
+                      vlan {
+                          members v{{ item.id }};
+                      }
+                      recovery-timeout 1800;
+                  }
+              }
+          }
+      }
+   }
+{% endfor %}
+{% endif %}
+}

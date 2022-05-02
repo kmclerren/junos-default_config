@@ -1,0 +1,5 @@
+---
+- name: building switch-options configuration
+  template: >
+    src={{ switch_options_template }}
+    dest={{ build_directory }}/01switch-options.conf.part

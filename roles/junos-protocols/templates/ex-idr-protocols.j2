@@ -1,0 +1,70 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split('.') %}
+{% set v6_prefix = site_ipv6_prefix.split(':') %}
+protocols {
+    mld {
+        interface all;
+    }
+    router-advertisement {
+{% for item in vlan.config %}
+        interface irb.{{ item.id }} {
+            managed-configuration;
+            other-stateful-configuration;
+            prefix {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:{{ item.id }}::/64 {
+                no-autonomous;
+            }
+        }
+{% endfor %}
+    }
+    lldp {
+        port-id-subtype interface-name;
+        port-description-type interface-alias;
+        neighbour-port-info-display port-id;
+        interface all;
+    }
+    igmp-snooping {
+        vlan all;
+    }
+    sflow {
+        sample-rate {
+            ingress 100;
+            egress 100;
+        }
+        source-ip {{ primary_ip4 }};
+        collector {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.11 {
+            udp-port 2000;
+        }
+        interfaces xe-0/0/0.0;
+        interfaces xe-0/0/1.0;
+        interfaces xe-0/0/4.0;
+        interfaces xe-0/0/6.0;
+        interfaces xe-0/0/7.0;
+        interfaces xe-0/0/10.0;
+        interfaces xe-0/0/11.0;
+        interfaces xe-0/0/16.0;
+        interfaces xe-1/0/0.0;
+        interfaces xe-1/0/1.0;
+        interfaces xe-1/0/4.0;
+        interfaces xe-1/0/6.0;
+        interfaces xe-1/0/7.0;
+        interfaces xe-1/0/10.0;
+        interfaces xe-1/0/11.0;
+        interfaces xe-1/0/16.0;
+    }
+    layer2-control {
+        nonstop-bridging;
+    }
+    vstp {
+        interface all;
+        vlan-group {
+            group root {
+                vlan [{% for item in vlan.config %} {{ item.id }} {% endfor %} ];
+                bridge-priority 4k;
+            }
+            group non-root {
+                vlan [ 200 2002 2008 2023 2024 2100 2200 2248 2252 2253 ];
+                bridge-priority 60k;
+            }
+        }
+    }
+}

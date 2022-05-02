@@ -1,0 +1,85 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split('.') %}
+{% set v6_prefix = site_ipv6_prefix.split(':') %}
+---
+{% raw %}
+# configuration templates
+common_template: "common.j2"
+
+# interfaces_template default: srx-chassis.j2
+# interfaces_template SRX1500: srx-chassis_srx1500.j2
+chassis_template: "srx-chassis.j2"
+
+virtual_chassis_template: "ex-virtual_chassis.j2"
+routing_options_template: "srx-efw-routing_options.j2"
+poe_template: "poe.j2"
+switch_options_template: "ex-dat-switch_options.j2"
+forwarding_options_template: "srx-efw-forwarding_options.j2"
+
+# interfaces_template default: srx-efw-interfaces.j2
+# interfaces_template SRX1500: srx-efw-interfaces_srx1500.j2
+interfaces_template: "srx-efw-interfaces.j2"
+
+protocols_template: "srx-efw-protocols.j2"
+vlans_template: "ex-dat-vlans.j2"
+groups_template: "srx-efw-groups.j2"
+security_template: "srx-efw-security.j2"
+policy_options_template: "srx-efw-policy_options.j2"
+routing_instances_template: "srx-efw-routing_instances.j2"
+applications_template: "applications.j2"
+services_template: "srx-efw-services.j2"
+
+{% endraw %}
+
+### OPTIONAL CONFIG BEGINS ###
+
+# cluster configuration
+cluster_id: 1
+node_id: 0
+
+# fxp0 ip address (hard coded)
+primary_ip4: {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.253.238
+primary_ip6: {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:2253::238
+
+# srx_code - The HTTP URL, version number, and package name to load onto the SRX.
+srx_code_path: "http://1.1.1.1/ztp/"
+
+# srx1500 - 15.1X49-D180.2
+# srx4100 - 15.1X49-D190.2
+srx_code_version: 15.1X49-D190.2
+
+# srx1500 - junos-srxentedge-15.1X49-D180.2-domestic.tgz
+# srx4100 - junos-srxmr-15.1X49-D190.2-domestic.tgz
+srx_code_package: junos-srxmr-15.1X49-D190.2-domestic.tgz
+
+### OPTIONAL CONFIG ENDS. ALL CONFIG BELOW IS REQUIRED TO BE MODIFIED ###
+
+# routed_block - the IP block we are routed
+routed_block: 3.3.1.1/28
+
+# vlan 10 IP - ISP 1 IP configuration. Provided by carrier.
+v10_ip: xyz/29
+v10_gateway: xxxx.1
+v10_ip6: xxxx/112
+v10_ip6_gateway: xxx:1e:1
+
+# vlan 11 IP - ISP 2 IP configuration. Provided by carrier.
+v11_ip: 1.2.3.4/31
+v11_gateway: 1.1.1.1
+v11_ip6: 2607:xxxx/127
+v11_ip6_gateway: 2607:fxxxxx:6
+
+# nat_pool - our default_nat pool of IPs
+nat_pool: 
+  - ip: 4.2.2.1/32
+  - ip: 4.2.2.4/32
+
+# hub_name - options: se1, as1. Where IPSEC terminates.
+hub_a_name: xx1
+hub_b_name: yy1
+
+# hub_endpoint - IP of IPSec endpoint at hub
+#
+# HUB "A" SHOULD BE YOUR PRIMARY DC
+# HUB "B" SHOULD BE YOUR SECONDARY DC
+#

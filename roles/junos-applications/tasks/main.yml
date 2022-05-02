@@ -1,0 +1,5 @@
+---
+- name: building applications configuration
+  template: >
+    src={{ applications_template }}
+    dest={{ build_directory }}/01applications.conf.part

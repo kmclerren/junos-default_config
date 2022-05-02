@@ -1,0 +1,284 @@
+#jinja2: lstrip_blocks: True
+{% set v4_prefix = site_ipv4_prefix.split('.') %}
+{% set v6_prefix = site_ipv6_prefix.split(':') %}
+{% set transit_octet = primary_ip4.split('.') %}
+interfaces {
+    xe-0/0/0 {
+        description "CORE: {{ site_name }}-net-icr-001";
+        ether-options {
+            802.3ad ae0;
+        }
+    }
+    xe-0/0/1 {
+        description "CORE: {{ site_name }}-net-icr-001";
+        ether-options {
+            802.3ad ae0;
+        }
+    }
+    xe-0/0/4 {
+        description "CORE: {{ site_name }}-{{ floor }}-dat-001";
+        ether-options {
+            802.3ad ae4;
+        }
+    }
+    xe-0/0/6 {
+        description "RESERVED: Future Expansion - Transit";
+        ether-options {
+            802.3ad ae6;
+        }
+    }
+    xe-0/0/7 {
+        description "RESERVED: Future Expansion - Transit";
+        ether-options {
+            802.3ad ae7;
+        }
+    }
+    xe-0/0/10 {
+        description "CORE: {{ site_name }}-{{ floor }}-dat-002";
+        ether-options {
+            802.3ad ae10;
+        }
+    }
+    xe-0/0/11 {
+        description "RESERVED: Future Expansion - Data";
+        ether-options {
+            802.3ad ae11;
+        }
+    }
+    xe-0/0/16 {
+        description "CORE: {{ site_name }}-{{ floor }}-uts-001";
+        ether-options {
+            802.3ad ae16;
+        }
+    }
+    xe-1/0/0 {
+        description "CORE: {{ site_name }}-net-icr-001";
+        ether-options {
+            802.3ad ae0;
+        }
+    }
+    xe-1/0/1 {
+        description "CORE: {{ site_name }}-net-icr-001";
+        ether-options {
+            802.3ad ae0;
+        }
+    }
+    xe-1/0/4 {
+        description "CORE: {{ site_name }}-{{ floor }}-dat-001";
+        ether-options {
+            802.3ad ae4;
+        }
+    }
+    xe-1/0/6 {
+        description "RESERVED: Future Expansion - Transit";
+        ether-options {
+            802.3ad ae6;
+        }
+    }
+    xe-1/0/7 {
+        description "RESERVED: Future Expansion - Transit";
+        ether-options {
+            802.3ad ae7;
+        }
+    }
+    xe-1/0/10 {
+        description "CORE: {{ site_name }}-{{ floor }}-dat-002";
+        ether-options {
+            802.3ad ae10;
+        }
+    }
+    xe-1/0/11 {
+        description "RESERVED: Future Expansion - Data";
+        ether-options {
+            802.3ad ae11;
+        }
+    }
+    xe-1/0/16 {
+        description "CORE: {{ site_name }}-{{ floor }}-uts-001";
+        ether-options {
+            802.3ad ae16;
+        }
+    }
+    ae0 {
+        description "CORE: {{ site_name }}-net-icr-001";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v2023 v2002 v2252 v2024 v2253 v200 v2008 v2100 ];
+                }
+            }
+        }
+    }
+    ae4 {
+        description "CORE: {{ site_name }}-{{ floor }}-dat-001";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [{% for item in vlan.config %} v{{ item.id }} {% endfor %} v2253 ];
+                }
+            }
+        }
+    }
+    ae6 {
+        description "RESERVED: Future Expansion -  Transit";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v200 v2253 ];
+                }
+            }
+        }
+    }
+    ae7 {
+        description "RESERVED: Future Expansion -  Transit";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v200 v2253 ];
+                }
+            }
+        }
+    }
+    ae10 {
+        description "CORE: {{ site_name }}-{{ floor }}-dat-002";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [{% for item in vlan.config %} v{{ item.id }} {% endfor %} v2253 ];
+                }
+            }
+        }
+    }
+    ae11 {
+        description "RESERVED: Future Expansion - Data";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [{% for item in vlan.config %} v{{ item.id }} {% endfor %} v2253 ];
+                }
+            }
+        }
+    }
+    ae16 {
+        description "CORE: {{ site_name }}-{{ floor }}-uts-001";
+        mtu 9216;
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+            }
+        }
+        unit 0 {
+            family ethernet-switching {
+                interface-mode trunk;
+                vlan {
+                    members [ v2023 v2002 v2252 v2024 v2253 v2008 v2100 ];
+                }
+            }
+        }
+    }
+    irb {
+        unit 200 {
+            description "Vlan 200 - ipv4:{{ v4_prefix[0] }}.{{ v4_prefix[1] }}.0/23 ipv6:{{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:0::/64 - Internal Transit";
+            family inet {
+                mtu 1500;
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.1.{{ transit_octet[3] }}/23;
+            }
+            family inet6 {
+                mtu 1500;
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:200::1:{{ transit_octet[3] }}/64 {
+                    preferred;
+                }
+                address fe80:200::1:{{ transit_octet[3] }}/64;
+            }
+        }
+{% for item in vlan.config %}
+        unit {{ item.id }} {
+            description "Vlan {{ item.id }} - ipv4: {{ item.ip }} ipv6: {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:{{ item.id }}::/64 - {{ item.description }}";
+            family inet {
+                mtu 9000;
+                address {{ item.ip }};
+            }
+            family inet6 {
+                mtu 9000;
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:{{ item.id }}::1/64 {
+                    preferred;
+                }
+                address fe80:{{ item.id }}::1/64;
+            }
+        }
+{% endfor %}
+    }
+    lo0 {
+        unit 0 {
+            family inet {
+                address {{ v4_prefix[0] }}.{{ v4_prefix[1] }}.254.{{ transit_octet[3] }}/32;
+            }
+            family inet6 {
+                address {{ v6_prefix[0] }}:{{ v6_prefix[1] }}:{{ v6_prefix[2] }}:ffff:{{ v4_prefix[0] }}:{{ v4_prefix[1] }}:254:{{ transit_octet[3] }}/128;
+            }
+        }
+    }
+    vme {
+        unit 0 {
+            description "Vlan 2253 - Network Management";
+            family inet {
+                address {{ primary_ip4 }}/24;
+            }
+            family inet6 {
+                address {{ primary_ip6 }}/64 {
+                    preferred;
+                }
+                address fe80:2253::{{ transit_octet[3] }}/64;
+            }
+        }
+    }
+}

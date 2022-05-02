@@ -1,0 +1,214 @@
+---
+- hosts: dat
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Set switch VLAN start IP
+      copy:
+        content="50" dest=/tmp/dat-vlan-counter-1.txt
+
+- hosts: dat
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Set switch VLAN start IP
+      copy:
+        content="150" dest=/tmp/dat-vlan-counter-2.txt
+
+- hosts: dat
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Set switch management start IP
+      copy:
+        content="100" dest=/tmp/dat-counter.txt
+
+- hosts: dat 
+  connection: local
+  gather_facts: no
+  serial: 1
+  tasks:
+    - name: Set dat facts
+      set_fact:
+        last_octet: "{{ lookup('file', '/tmp/dat-counter.txt') }}"
+    - name: Set dat vlan 1 facts
+      set_fact:
+        vlan_counter_1: "{{ lookup('file', '/tmp/dat-vlan-counter-1.txt') }}"
+    - name: Set dat vlan 2 facts
+      set_fact:
+        vlan_counter_2: "{{ lookup('file', '/tmp/dat-vlan-counter-2.txt') }}"
+    - name: Generate dat vars
+      template:
+        src=templates/dat_hostvars.j2
+        dest=./host_vars/{{ inventory_hostname }}.yml
+    - name: Increment counters
+      copy:
+        content={{ last_octet | int + 1 }} dest=/tmp/dat-counter.txt
+    - name: Increment vlan 1 counters
+      copy:
+        content={{ vlan_counter_1 | int + 1 }} dest=/tmp/dat-vlan-counter-1.txt
+    - name: Increment vlan 2 counters
+      copy:
+        content={{ vlan_counter_2 | int + 1 }} dest=/tmp/dat-vlan-counter-2.txt
+
+- hosts: efw
+  connection: local
+  gather_facts: no
+  serial: 1
+  tasks:
+    - name: Generate efw_01a vars
+      template:
+        src=templates/efw_01a_hostvars.j2
+        dest=./host_vars/{{ inventory_hostname }}.yml
+
+- hosts: efw_01b
+  connection: local
+  gather_facts: no
+  serial: 1
+  tasks:
+    - name: Generate efw_01b vars
+      template:
+        src=templates/efw_01b_hostvars.j2
+        dest=./host_vars/{{ inventory_hostname }}.yml
+
+- hosts: oob
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Set switch management start IP
+      copy:
+        content="120" dest=/tmp/oob-counter.txt
+
+- hosts: oob 
+  connection: local
+  gather_facts: no
+  serial: 1
+  tasks:
+    - name: Set oob facts
+      set_fact:
+        last_octet: "{{ lookup('file', '/tmp/oob-counter.txt') }}"
+    - name: Generate oob vars
+      template:
+        src=templates/oob_hostvars.j2
+        dest=./host_vars/{{ inventory_hostname }}.yml
+    - name: Increment counters
+      copy:
+        content={{ last_octet | int + 1 }} dest=/tmp/oob-counter.txt
+
+- hosts: obr 
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Generate obr vars
+      template:
+        src=templates/obr_hostvars.j2
+        dest=./host_vars/{{ inventory_hostname }}.yml
+
+- hosts: icr 
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Generate icr vars
+      template:
+        src=templates/icr_hostvars.j2
+        dest=./host_vars/{{ inventory_hostname }}.yml
+
+- hosts: idr
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Set switch VLAN start IP
+      copy:
+        content="50" dest=/tmp/idr-vlan-counter-1.txt
+
+- hosts: idr
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Set switch VLAN start IP
+      copy:
+        content="150" dest=/tmp/idr-vlan-counter-2.txt
+
+- hosts: idr
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Set switch management start IP
+      copy:
+        content="140" dest=/tmp/idr-counter.txt
+
+- hosts: idr 
+  connection: local
+  gather_facts: no
+  serial: 1
+  tasks:
+    - name: Set idr facts
+      set_fact:
+        last_octet: "{{ lookup('file', '/tmp/idr-counter.txt') }}"
+    - name: Set idr vlan 1 facts
+      set_fact:
+        vlan_counter_1: "{{ lookup('file', '/tmp/idr-vlan-counter-1.txt') }}"
+    - name: Set idr vlan 2 facts
+      set_fact:
+        vlan_counter_2: "{{ lookup('file', '/tmp/idr-vlan-counter-2.txt') }}"
+    - name: Generate idr vars
+      template:
+        src=templates/idr_hostvars.j2
+        dest=./host_vars/{{ inventory_hostname }}.yml
+    - name: Increment counters
+      copy:
+        content={{ last_octet | int + 1 }} dest=/tmp/idr-counter.txt
+    - name: Increment vlan 1 counters
+      copy:
+        content={{ vlan_counter_1 | int + 1 }} dest=/tmp/idr-vlan-counter-1.txt
+    - name: Increment vlan 2 counters
+      copy:
+        content={{ vlan_counter_2 | int + 1 }} dest=/tmp/idr-vlan-counter-2.txt
+
+- hosts: uts
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Set switch management start IP
+      copy:
+        content="160" dest=/tmp/uts-counter.txt
+
+- hosts: uts 
+  connection: local
+  gather_facts: no
+  serial: 1
+  tasks:
+    - name: Set uts facts
+      set_fact:
+        last_octet: "{{ lookup('file', '/tmp/uts-counter.txt') }}"
+    - name: Generate uts vars
+      template:
+        src=templates/uts_hostvars.j2
+        dest=./host_vars/{{ inventory_hostname }}.yml
+    - name: Increment counters
+      copy:
+        content={{ last_octet | int + 1 }} dest=/tmp/uts-counter.txt
+
+- hosts: s01
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Set switch management start IP
+      copy:
+        content="180" dest=/tmp/s01-counter.txt
+
+- hosts: s01 
+  connection: local
+  gather_facts: no
+  serial: 1
+  tasks:
+    - name: Set s01 facts
+      set_fact:
+        last_octet: "{{ lookup('file', '/tmp/s01-counter.txt') }}"
+    - name: Generate s01 vars
+      template:
+        src=templates/s01_hostvars.j2
+        dest=./host_vars/{{ inventory_hostname }}.yml
+    - name: Increment counters
+      copy:
+        content={{ last_octet | int + 1 }} dest=/tmp/s01-counter.txt

@@ -1,0 +1,33 @@
+#jinja2: lstrip_blocks: True
+services {
+    flow-monitoring {
+        version9 {
+            template v4 {
+                flow-active-timeout 60;
+                flow-inactive-timeout 60;
+                template-refresh-rate {
+                    packets 1000;
+                    seconds 10;
+                }
+                option-refresh-rate {
+                    packets 1000;
+                    seconds 10;
+                }
+                ipv4-template;
+            }
+            template v6 {
+                flow-active-timeout 60;
+                flow-inactive-timeout 60;
+                template-refresh-rate {
+                    packets 1000;
+                    seconds 10;
+                }
+                option-refresh-rate {
+                    packets 1000;
+                    seconds 10;
+                }
+                ipv6-template;
+            }
+        }
+    }
+}

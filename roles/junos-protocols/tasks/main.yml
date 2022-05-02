@@ -1,0 +1,5 @@
+---
+- name: building protocols configuration
+  template: >
+    src={{ protocols_template }}
+    dest={{ build_directory }}/01protocols.conf.part
